@@ -11,10 +11,14 @@
             "id": "59c8b98efd2e92bf",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "esp_wifi component.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "New tab"
+              "title": "esp_wifi component"
             }
           }
         ]
@@ -74,7 +78,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
   "right": {
     "id": "4fbcc5645088a4ad",
@@ -178,6 +183,7 @@
   },
   "active": "59c8b98efd2e92bf",
   "lastOpenFiles": [
+    "esp_wifi component.md",
     "Welcome.md"
   ]
 }
