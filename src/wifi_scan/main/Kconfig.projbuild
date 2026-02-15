@@ -1,0 +1,31 @@
+menu "Example Configuration"
+
+    config SCAN_LIST_SIZE
+        int "Max size of scan list"
+        range 1 30
+        default 15
+        help
+            The size of array that will be used to retrieve the list of access points.
+
+    config SCAN_ITERATION_COUNT
+        int "Scan iterations"
+        range 1 15
+        default 5
+        help
+            Number of iteration scans to perform.
+
+    config SCAN_ITERATION_PEROID
+        int "Scan iteration peroid"
+        range 1 10
+        default 2
+        help
+            Number of seconds to wait before the next scan iteration begins in seconds.
+            
+    config RF_CHANNEL
+        int "RF channels"
+        range 0 11
+        default 0
+        help 
+            RF channel to scan. Set to zero to scan all possbile channels.
+ 
+endmenu
