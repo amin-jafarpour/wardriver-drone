@@ -1,0 +1,2 @@
+source /home/amin/workspace/wardriver-drone/src/802dot11/build/bootloader/gdbinit/symbols
+source /home/amin/workspace/wardriver-drone/src/802dot11/build/bootloader/gdbinit/connect

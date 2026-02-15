@@ -1,0 +1,13 @@
+# Target labels
+ bootloader
+# Source files and their labels
+/home/amin/workspace/wardriver-drone/src/802dot11/build/CMakeFiles/bootloader
+/home/amin/workspace/wardriver-drone/src/802dot11/build/CMakeFiles/bootloader.rule
+/home/amin/workspace/wardriver-drone/src/802dot11/build/CMakeFiles/bootloader-complete.rule
+/home/amin/workspace/wardriver-drone/src/802dot11/build/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule
+/home/amin/workspace/wardriver-drone/src/802dot11/build/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule
+/home/amin/workspace/wardriver-drone/src/802dot11/build/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule
+/home/amin/workspace/wardriver-drone/src/802dot11/build/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule
+/home/amin/workspace/wardriver-drone/src/802dot11/build/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule
+/home/amin/workspace/wardriver-drone/src/802dot11/build/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule
+/home/amin/workspace/wardriver-drone/src/802dot11/build/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule
