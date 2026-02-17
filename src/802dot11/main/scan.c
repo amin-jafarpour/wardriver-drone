@@ -9,9 +9,10 @@
 #define CHAN_LST_SIZE 14
 #define DES_AP_CT 10
 #define SCAN_ITER_CT 10 
+#define PAUSE_ITER_SEC 1
 
 static const char *TAG = "802dot11";
-static uint8_t channel_list[CHAN_LST_SIZE] = {1, 6, 11};
+static uint8_t chan_lst[CHAN_LST_SIZE] =  {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}; // {1, 6, 11};
 
 static void event_handler(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data)
 {
@@ -173,10 +174,10 @@ void setup()
     wifi_init_config_t wifi_init_cfg = WIFI_INIT_CONFIG_DEFAULT();
     ret = esp_wifi_init(&wifi_init_cfg);
     ESP_ERROR_CHECK(ret);
-    ret = esp_event_handler_instance_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &event_handler, NULL, NULL);
-    ESP_ERROR_CHECK(ret);
-    ret = esp_event_handler_instance_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &event_handler, NULL, NULL);
-    ESP_ERROR_CHECK(ret);
+    // ret = esp_event_handler_instance_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &event_handler, NULL, NULL);
+    // ESP_ERROR_CHECK(ret);
+    // ret = esp_event_handler_instance_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &event_handler, NULL, NULL);
+    // ESP_ERROR_CHECK(ret);
     esp_netif_t *sta_netif = esp_netif_create_default_wifi_sta();
     if (sta_netif == NULL)
     {
@@ -194,9 +195,9 @@ void setup()
     // ESP_ERROR_CHECK(ret);
 
     // ***Method 2***
-    // wifi_scan_config_t *wifi_scan_cfg = {};
-    // arr_2_chan_bmp(chan_lst, CHAN_LST_SIZE, wifi_scan_cfg);
-    // esp_wifi_scan_start(wifi_scan_cfg, true);
+    wifi_scan_config_t wifi_scan_cfg = {};
+    arr_2_chan_bmp(chan_lst, CHAN_LST_SIZE, &wifi_scan_cfg);
+    esp_wifi_scan_start(&wifi_scan_cfg, true);
 
 
     uint16_t des_ap_ct = DES_AP_CT;
@@ -206,7 +207,7 @@ void setup()
     {
         ret = esp_wifi_scan_get_ap_num(&des_ap_ct);
         ESP_ERROR_CHECK(ret);
-        ret = esp_wifi_scan_get_ap_records(&recv_ap_ct, ap_info)
+        ret = esp_wifi_scan_get_ap_records(&recv_ap_ct, ap_info);
         ESP_ERROR_CHECK(ret);
 
         for(int j = 0; j < recv_ap_ct; j++)
@@ -218,8 +219,9 @@ void setup()
             print_cipher_type(ap_info[i].pairwise_cipher, ap_info[i].group_cipher);
         }
         // clean up
-        ap_info = {};
+        memset(&ap_info, 0, CHAN_LST_SIZE);
         recv_ap_ct = 0;
+        vTaskDelay(pdMS_TO_TICKS(PAUSE_ITER_SEC));
     }
 
 }

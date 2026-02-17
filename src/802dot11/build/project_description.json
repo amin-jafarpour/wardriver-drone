@@ -1,7 +1,7 @@
 {
     "version":            "1.2",
     "project_name":       "802dot11",
-    "project_version":    "579bfd1-dirty",
+    "project_version":    "190eaba-dirty",
     "project_path":       "/home/amin/workspace/wardriver-drone/src/802dot11",
     "idf_path":           "/home/amin/esp-idf",
     "build_dir":          "/home/amin/workspace/wardriver-drone/src/802dot11/build",
