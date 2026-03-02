@@ -10,6 +10,8 @@
 #include "sd_pwr_ctrl_by_on_chip_ldo.h"
 #endif
 
+#define DATA_SIZE 500
+
 static const char *TAG = "example";
 
 #define MOUNT_POINT "/wardriver"
@@ -72,7 +74,7 @@ static esp_err_t read_file(const char *path)
         ESP_LOGE(TAG, "Failed to open file for reading");
         return ESP_FAIL;
     }
-    char line[1500];
+    char line[DATA_SIZE];
     fgets(line, sizeof(line), file);
     fclose(file);
     char *pos = strchr(line, '\n');
@@ -211,8 +213,8 @@ void app_main(void)
    
     // POXIS
     const char *file_hello = MOUNT_POINT"/hello.txt";
-    char data[1500];
-    snprintf(data, 150, "%s %s!\n", "Hello", card->cid.name);
+    char data[DATA_SIZE];
+    snprintf(data, DATA_SIZE, "%s %s!\n", "Hello", card->cid.name);
     ret = overwrite_file(file_hello, data);
     if (ret != ESP_OK) {
         return;
@@ -251,8 +253,8 @@ void app_main(void)
 #endif
 
     const char *file_nihao = MOUNT_POINT"/nihao.txt";
-    memset(data, 0, 1500);
-    snprintf(data, 1500, "%s %s!\n", "Nihao", card->cid.name);
+    memset(data, 0, DATA_SIZE);
+    snprintf(data, DATA_SIZE, "%s %s!\n", "Nihao", card->cid.name);
     ret = overwrite_file(file_nihao, data);
     if (ret != ESP_OK) {
         return;
