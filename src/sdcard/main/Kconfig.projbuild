@@ -15,7 +15,7 @@ menu "SD/MMC Configuration"
 
     choice SDMMC_BUS_WIDTH
         prompt "SD/MMC bus width"
-        default SDMMC_BUS_WIDTH_4
+        default SDMMC_BUS_WIDTH_1
         help
             Select the bus width of SD or MMC interface.
             Note that even if 1 line mode is used, D3 pin of the SD card still must have a pull-up resistor connected.
@@ -56,21 +56,21 @@ menu "SD/MMC Configuration"
     config PIN_CMD
         int
         prompt "CMD GPIO number" if SOC_SDMMC_USE_GPIO_MATRIX
-        default 35 if IDF_TARGET_ESP32S3
+        default 38 if IDF_TARGET_ESP32S3
         default 44 if IDF_TARGET_ESP32P4
         default 15 if IDF_TARGET_ESP32
 
     config PIN_CLK
         int
         prompt "CLK GPIO number" if SOC_SDMMC_USE_GPIO_MATRIX
-        default 36 if IDF_TARGET_ESP32S3
+        default 39 if IDF_TARGET_ESP32S3
         default 43 if IDF_TARGET_ESP32P4
         default 14 if IDF_TARGET_ESP32
 
     config PIN_D0
         int
         prompt "D0 GPIO number" if SOC_SDMMC_USE_GPIO_MATRIX
-        default 37 if IDF_TARGET_ESP32S3
+        default 40 if IDF_TARGET_ESP32S3
         default 39 if IDF_TARGET_ESP32P4
         default 2 if IDF_TARGET_ESP32
 
