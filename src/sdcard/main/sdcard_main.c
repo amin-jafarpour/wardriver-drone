@@ -212,7 +212,7 @@ void app_main(void)
     // POXIS
     const char *file_hello = MOUNT_POINT"/hello.txt";
     char data[1500];
-    snprintf(data, MAX_CHAR_SIZE, "%s %s!\n", "Hello", card->cid.name);
+    snprintf(data, 150, "%s %s!\n", "Hello", card->cid.name);
     ret = overwrite_file(file_hello, data);
     if (ret != ESP_OK) {
         return;
@@ -251,8 +251,8 @@ void app_main(void)
 #endif
 
     const char *file_nihao = MOUNT_POINT"/nihao.txt";
-    memset(data, 0, MAX_CHAR_SIZE);
-    snprintf(data, MAX_CHAR_SIZE, "%s %s!\n", "Nihao", card->cid.name);
+    memset(data, 0, 1500);
+    snprintf(data, 1500, "%s %s!\n", "Nihao", card->cid.name);
     ret = overwrite_file(file_nihao, data);
     if (ret != ESP_OK) {
         return;
