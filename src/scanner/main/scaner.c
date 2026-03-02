@@ -10,9 +10,8 @@
 #define DEFAULT_SCAN_LIST_SIZE CONFIG_SCAN_LIST_SIZE
 
 #ifdef CONFIG_USE_SCAN_CHANNEL_BITMAP
-// #define USE_CHANNEL_BITMAP 1
 #define CHANNEL_LIST_SIZE 3
-static uint8_t channel_list[CHANNEL_LIST_SIZE] = {1, 6, 11};
+static uint8_t channel_list[CHANNEL_LIST_SIZE] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}; // {1, 6, 11};
 #endif 
 
 static const char *TAG = "scaner";
@@ -163,33 +162,39 @@ static void wifi_scan(void)
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
     ESP_ERROR_CHECK(esp_wifi_start());
 
-#ifdef CONFIG_USE_SCAN_CHANNEL_BITMAP
-    wifi_scan_config_t *scan_config = (wifi_scan_config_t *)calloc(1,sizeof(wifi_scan_config_t));
-    if (!scan_config) {
-        ESP_LOGE(TAG, "Memory Allocation for scan config failed!");
-        return;
-    }
-    array_2_channel_bitmap(channel_list, CHANNEL_LIST_SIZE, scan_config);
-    esp_wifi_scan_start(scan_config, true);
-    free(scan_config);
+    while(true)
+    {
+        #ifdef CONFIG_USE_SCAN_CHANNEL_BITMAP
+            wifi_scan_config_t *scan_config = (wifi_scan_config_t *)calloc(1,sizeof(wifi_scan_config_t));
+            if (!scan_config) {
+                ESP_LOGE(TAG, "Memory Allocation for scan config failed!");
+                return;
+            }
+            array_2_channel_bitmap(channel_list, CHANNEL_LIST_SIZE, scan_config);
+            esp_wifi_scan_start(scan_config, true);
+            free(scan_config);
 
-#else
-    esp_wifi_scan_start(NULL, true);
-#endif
+        #else
+            esp_wifi_scan_start(NULL, true);
+        #endif
 
-    ESP_LOGI(TAG, "Max AP number ap_info can hold = %u", number);
-    ESP_ERROR_CHECK(esp_wifi_scan_get_ap_num(&ap_count));
-    ESP_ERROR_CHECK(esp_wifi_scan_get_ap_records(&number, ap_info));
-    ESP_LOGI(TAG, "Total APs scanned = %u, actual AP number ap_info holds = %u", ap_count, number);
-    for (int i = 0; i < number; i++) {
-        ESP_LOGI(TAG, "SSID \t\t%s", ap_info[i].ssid);
-        ESP_LOGI(TAG, "RSSI \t\t%d", ap_info[i].rssi);
-        print_auth_mode(ap_info[i].authmode);
-        if (ap_info[i].authmode != WIFI_AUTH_WEP) {
-            print_cipher_type(ap_info[i].pairwise_cipher, ap_info[i].group_cipher);
-        }
-        ESP_LOGI(TAG, "Channel \t\t%d", ap_info[i].primary);
+            ESP_LOGI(TAG, "Max AP number ap_info can hold = %u", number);
+            ESP_ERROR_CHECK(esp_wifi_scan_get_ap_num(&ap_count));
+            ESP_ERROR_CHECK(esp_wifi_scan_get_ap_records(&number, ap_info));
+            ESP_LOGI(TAG, "Total APs scanned = %u, actual AP number ap_info holds = %u", ap_count, number);
+            for (int i = 0; i < number; i++) {
+                ESP_LOGI(TAG, "SSID \t\t%s", ap_info[i].ssid);
+                ESP_LOGI(TAG, "RSSI \t\t%d", ap_info[i].rssi);
+                print_auth_mode(ap_info[i].authmode);
+                if (ap_info[i].authmode != WIFI_AUTH_WEP) {
+                    print_cipher_type(ap_info[i].pairwise_cipher, ap_info[i].group_cipher);
+                }
+                ESP_LOGI(TAG, "Channel \t\t%d", ap_info[i].primary);
+            }
+        vTaskDelay(pdMS_TO_TICKS(500));
     }
+
+
 }
 
 void app_main(void)
