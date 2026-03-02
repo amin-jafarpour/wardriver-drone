@@ -1,15 +1,3 @@
-/* Scan Example
-
-   This example code is in the Public Domain (or CC0 licensed, at your option.)
-
-   Unless required by applicable law or agreed to in writing, this
-   software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-   CONDITIONS OF ANY KIND, either express or implied.
-*/
-
-/*
-    This example shows how to scan for available set of APs.
-*/
 #include <string.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/event_groups.h"
@@ -19,15 +7,15 @@
 #include "nvs_flash.h"
 #include "regex.h"
 
-#define DEFAULT_SCAN_LIST_SIZE CONFIG_EXAMPLE_SCAN_LIST_SIZE
+#define DEFAULT_SCAN_LIST_SIZE CONFIG_SCAN_LIST_SIZE
 
-#ifdef CONFIG_EXAMPLE_USE_SCAN_CHANNEL_BITMAP
-#define USE_CHANNEL_BITMAP 1
+#ifdef CONFIG_USE_SCAN_CHANNEL_BITMAP
+// #define USE_CHANNEL_BITMAP 1
 #define CHANNEL_LIST_SIZE 3
 static uint8_t channel_list[CHANNEL_LIST_SIZE] = {1, 6, 11};
-#endif /*CONFIG_EXAMPLE_USE_SCAN_CHANNEL_BITMAP*/
+#endif 
 
-static const char *TAG = "scan";
+static const char *TAG = "scaner";
 
 static void print_auth_mode(int authmode)
 {
@@ -146,7 +134,7 @@ static void print_cipher_type(int pairwise_cipher, int group_cipher)
     }
 }
 
-#ifdef USE_CHANNEL_BITMAP
+#ifdef CONFIG_USE_SCAN_CHANNEL_BITMAP
 static void array_2_channel_bitmap(const uint8_t channel_list[], const uint8_t channel_list_size, wifi_scan_config_t *scan_config) {
 
     for(uint8_t i = 0; i < channel_list_size; i++) {
@@ -154,10 +142,8 @@ static void array_2_channel_bitmap(const uint8_t channel_list[], const uint8_t c
         scan_config->channel_bitmap.ghz_2_channels |= (1 << channel);
     }
 }
-#endif /*USE_CHANNEL_BITMAP*/
+#endif
 
-
-/* Initialize Wi-Fi as sta and set scan method */
 static void wifi_scan(void)
 {
     ESP_ERROR_CHECK(esp_netif_init());
@@ -177,7 +163,7 @@ static void wifi_scan(void)
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
     ESP_ERROR_CHECK(esp_wifi_start());
 
-#ifdef USE_CHANNEL_BITMAP
+#ifdef CONFIG_USE_SCAN_CHANNEL_BITMAP
     wifi_scan_config_t *scan_config = (wifi_scan_config_t *)calloc(1,sizeof(wifi_scan_config_t));
     if (!scan_config) {
         ESP_LOGE(TAG, "Memory Allocation for scan config failed!");
@@ -189,7 +175,7 @@ static void wifi_scan(void)
 
 #else
     esp_wifi_scan_start(NULL, true);
-#endif /*USE_CHANNEL_BITMAP*/
+#endif
 
     ESP_LOGI(TAG, "Max AP number ap_info can hold = %u", number);
     ESP_ERROR_CHECK(esp_wifi_scan_get_ap_num(&ap_count));
@@ -208,7 +194,6 @@ static void wifi_scan(void)
 
 void app_main(void)
 {
-    // Initialize NVS
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
         ESP_ERROR_CHECK(nvs_flash_erase());
