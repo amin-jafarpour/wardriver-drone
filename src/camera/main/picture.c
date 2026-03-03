@@ -1,40 +1,4 @@
-/**
- * This example takes a picture every 5s and print its size on serial monitor.
- */
-
-// =============================== SETUP ======================================
-
-// 1. Board setup (Uncomment):
-// #define BOARD_WROVER_KIT
-// #define BOARD_ESP32CAM_AITHINKER
-// #define BOARD_ESP32S3_WROOM
-// #define BOARD_ESP32S3_XIAO
-// #define BOARD_ESP32S3_GOOUUU
-// #define BOARD_ESP32S3_XIAO
-
-/**
- * 2. Kconfig setup
- *
- * If you have a Kconfig file, copy the content from
- *  https://github.com/espressif/esp32-camera/blob/master/Kconfig into it.
- * In case you haven't, copy and paste this Kconfig file inside the src directory.
- * This Kconfig file has definitions that allows more control over the camera and
- * how it will be initialized.
- */
-
-/**
- * 3. Enable PSRAM on sdkconfig:
- *
- * CONFIG_ESP32_SPIRAM_SUPPORT=y
- *
- * More info on
- * https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/kconfig.html#config-esp32-spiram-support
- */
-
-// ================================ CODE ======================================
-
 #include "sdkconfig.h"
-
 #include <esp_log.h>
 #include <esp_system.h>
 #include <nvs_flash.h>
@@ -56,9 +20,6 @@
 #endif
 
 #define BOARD_WROVER_KIT 1
-
-// #include "camera_pinout.h"
-
 
 #define CAM_PIN_PWDN    -1
 #define CAM_PIN_RESET   -1
@@ -82,7 +43,7 @@
 #define CAM_PIN_PCLK    13
 
 
-static const char *TAG = "example:take_picture";
+static const char *TAG = "camera";
 
 #if ESP_CAMERA_SUPPORTED
 static camera_config_t camera_config = {
