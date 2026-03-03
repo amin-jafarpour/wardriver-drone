@@ -5,7 +5,6 @@
 #include "sdmmc_cmd.h"
 #include "driver/sdmmc_host.h"
 #include "driver/gpio.h"
-#include "sd_test_io.h"
 #if SOC_SDMMC_IO_POWER_EXTERNAL
 #include "sd_pwr_ctrl_by_on_chip_ldo.h"
 #endif
