@@ -11,7 +11,7 @@
 
 #define DATA_SIZE 500
 
-static const char *TAG = "example";
+static const char *TAG = "app";
 
 #define MOUNT_POINT "/wardriver"
 #define IS_UHS1 (CONFIG_SDMMC_SPEED_UHS_I_SDR50 || CONFIG_SDMMC_SPEED_UHS_I_DDR50 || CONFIG_SDMMC_SPEED_UHS_I_SDR104)
