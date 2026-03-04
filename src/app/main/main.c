@@ -92,6 +92,10 @@ static void array_2_channel_bitmap(const uint8_t channel_list[], const uint8_t c
 }
 #endif
 
+
+FILE *badfile = NULL;
+
+
 void wifi_scan(sdmmc_card_t *card)
 {
     esp_err_t ret = nvs_flash_init();
@@ -123,6 +127,7 @@ void wifi_scan(sdmmc_card_t *card)
 
       const char *file_path = MOUNT_POINT"/file.txt";
       FILE *f = fopen(file_path, "a");
+      badfile = f;
     if (f == NULL) {
     perror("fopexn");
     return;
@@ -158,6 +163,7 @@ void wifi_scan(sdmmc_card_t *card)
         vTaskDelay(pdMS_TO_TICKS(500));
         fflush(f);
         fclose(f);
+        badfile = NULL;
     }
 
 
@@ -301,6 +307,8 @@ static void gps_event_handler(void *event_handler_arg, esp_event_base_t event_ba
     case GPS_UPDATE:
         gps = (gps_t *)event_data;
         /* print information parsed from GPS statements */
+
+        if(true || badfile == NULL){
         ESP_LOGI(TAG, "%d/%d/%d %d:%d:%d => \r\n"
                  "\t\t\t\t\t\tlatitude   = %.05f°N\r\n"
                  "\t\t\t\t\t\tlongitude = %.05f°E\r\n"
@@ -309,6 +317,18 @@ static void gps_event_handler(void *event_handler_arg, esp_event_base_t event_ba
                  gps->date.year + YEAR_BASE, gps->date.month, gps->date.day,
                  gps->tim.hour + TIME_ZONE, gps->tim.minute, gps->tim.second,
                  gps->latitude, gps->longitude, gps->altitude, gps->speed);
+        }
+        else{
+       fprintf(badfile,"%d/%d/%d %d:%d:%d => \r\n"
+                 "\t\t\t\t\t\tlatitude   = %.05f°N\r\n"
+                 "\t\t\t\t\t\tlongitude = %.05f°E\r\n"
+                 "\t\t\t\t\t\taltitude   = %.02fm\r\n"
+                 "\t\t\t\t\t\tspeed      = %fm/s",
+                 gps->date.year + YEAR_BASE, gps->date.month, gps->date.day,
+                 gps->tim.hour + TIME_ZONE, gps->tim.minute, gps->tim.second,
+                 gps->latitude, gps->longitude, gps->altitude, gps->speed);
+        }
+
         break;
     case GPS_UNKNOWN:
         /* print unknown statements */
