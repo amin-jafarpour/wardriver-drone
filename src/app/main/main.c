@@ -138,12 +138,16 @@ void wifi_scan(sdmmc_card_t *card)
 
     
   
-  const char *file_path = "/wardriver.txt";
+
+
+
     while(true)
     {
-    FILE *f = fopen(file_path, "a");
+
+      const char *file_path = MOUNT_POINT"/file.txt";
+      FILE *f = fopen(file_path, "a");
     if (f == NULL) {
-    perror("fopen");
+    perror("fopexn");
     return;
     }
 
@@ -167,10 +171,15 @@ void wifi_scan(sdmmc_card_t *card)
             ESP_ERROR_CHECK(esp_wifi_scan_get_ap_records(&number, ap_info));
             ESP_LOGI(TAG, "Total APs scanned = %u, actual AP number ap_info holds = %u", ap_count, number);
             for (int i = 0; i < number; i++) {
-                fprintf(f, "Hello log\n");
-                ESP_LOGI(TAG, "hi");
+                uint8_t *mac = ap_info[i].bssid;
+                fprintf(f, "%02X:%02X:%02X:%02X:%02X:%02X\n",
+       mac[0], mac[1], mac[2],
+       mac[3], mac[4], mac[5]);
+                
+                
             }
         vTaskDelay(pdMS_TO_TICKS(500));
+        fflush(f);
         fclose(f);
     }
 
