@@ -153,10 +153,10 @@ void wifi_scan(sdmmc_card_t *card)
             ESP_ERROR_CHECK(esp_wifi_scan_get_ap_records(&number, ap_info));
             ESP_LOGI(TAG, "Total APs scanned = %u, actual AP number ap_info holds = %u", ap_count, number);
             for (int i = 0; i < number; i++) {
-                uint8_t *mac = ap_info[i].bssid;
-                fprintf(f, "%02X:%02X:%02X:%02X:%02X:%02X\n",
-       mac[0], mac[1], mac[2],
-       mac[3], mac[4], mac[5]);
+    //             uint8_t *mac = ap_info[i].bssid;
+    //             fprintf(f, "%02X:%02X:%02X:%02X:%02X:%02X\n",
+    //    mac[0], mac[1], mac[2],
+    //    mac[3], mac[4], mac[5]);
                 
                 
             }
@@ -308,7 +308,7 @@ static void gps_event_handler(void *event_handler_arg, esp_event_base_t event_ba
         gps = (gps_t *)event_data;
         /* print information parsed from GPS statements */
 
-        if(true || badfile == NULL){
+        if(badfile == NULL){
         ESP_LOGI(TAG, "%d/%d/%d %d:%d:%d => \r\n"
                  "\t\t\t\t\t\tlatitude   = %.05f°N\r\n"
                  "\t\t\t\t\t\tlongitude = %.05f°E\r\n"
