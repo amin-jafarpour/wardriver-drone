@@ -16,7 +16,6 @@
 #include "regex.h"
 
 
-
 #if SOC_SDMMC_IO_POWER_EXTERNAL
 #include "sd_pwr_ctrl_by_on_chip_ldo.h"
 #endif
@@ -65,12 +64,6 @@ pin_configuration_t config = {
 };
 #endif //CONFIG_DEBUG_PIN_CONNECTIONS
 
-
-
-
-
-
-
 #define DEFAULT_SCAN_LIST_SIZE CONFIG_SCAN_LIST_SIZE
 
 #ifdef CONFIG_USE_SCAN_CHANNEL_BITMAP
@@ -117,30 +110,6 @@ void wifi_scan(sdmmc_card_t *card)
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
     ESP_ERROR_CHECK(esp_wifi_start());
 
-
-
-
-
-
-
-
-
- 
-  
-    // char data[DATA_SIZE];
-    // snprintf(data, DATA_SIZE, "%s %s!\n", "Hello", card->cid.name);
-    // ret = overwrite_file(file_hello, data);
-    // if (ret != ESP_OK) {
-    //     return;
-    // }
-
-
-
-    
-  
-
-
-
     while(true)
     {
 
@@ -186,46 +155,6 @@ void wifi_scan(sdmmc_card_t *card)
 
 }
 
-
-
-
-
-
-// static esp_err_t overwrite_file(const char *path, char *data)
-// {
-//     ESP_LOGI(TAG, "Opening file %s", path);
-//     FILE *file = fopen(path, "w");
-//     if (file == NULL) {
-//         ESP_LOGE(TAG, "Failed to open file for writing");
-//         return ESP_FAIL;
-//     }
-//     fprintf(file, data);
-//     fclose(file);
-//     ESP_LOGI(TAG, "File written");
-//     return ESP_OK;
-// }
-
-
-
-
-// static esp_err_t read_file(const char *path)
-// {
-//     ESP_LOGI(TAG, "Reading file %s", path);
-//     FILE *file = fopen(path, "r");
-//     if (file == NULL) {
-//         ESP_LOGE(TAG, "Failed to open file for reading");
-//         return ESP_FAIL;
-//     }
-//     char line[DATA_SIZE];
-//     fgets(line, sizeof(line), file);
-//     fclose(file);
-//     char *pos = strchr(line, '\n');
-//     if (pos) {
-//         *pos = '\0';
-//     }
-//     ESP_LOGI(TAG, "Read from file: '%s'", line);
-//     return ESP_OK;
-// }
 
 #if CONFIG_PIN_CARD_POWER_RESET
 static esp_err_t reset_card_power(void)
@@ -362,68 +291,4 @@ void app_main(void)
 {
 
     sdcard_setup(wifi_scan);
-    // POXIS
-    // const char *file_hello = MOUNT_POINT"/hello.txt";
-    // char data[DATA_SIZE];
-    // snprintf(data, DATA_SIZE, "%s %s!\n", "Hello", card->cid.name);
-    // ret = overwrite_file(file_hello, data);
-    // if (ret != ESP_OK) {
-    //     return;
-    // }
-
-//     const char *file_foo = MOUNT_POINT"/foo.txt";
-//     struct stat st;
-//     if (stat(file_foo, &st) == 0) {
-//         unlink(file_foo);
-//     }
-
-//     ESP_LOGI(TAG, "Renaming file %s to %s", file_hello, file_foo);
-//     if (rename(file_hello, file_foo) != 0) {
-//         ESP_LOGE(TAG, "Rename failed");
-//         return;
-//     }
-
-//     ret = read_file(file_foo);
-//     if (ret != ESP_OK) {
-//         return;
-//     }
-
-// #ifdef CONFIG_FORMAT_SD_CARD
-//     ret = esp_vfs_fat_sdcard_format(mount_point, card);
-//     if (ret != ESP_OK) {
-//         ESP_LOGE(TAG, "Failed to format FATFS (%s)", esp_err_to_name(ret));
-//         return;
-//     }
-
-//     if (stat(file_foo, &st) == 0) {
-//         ESP_LOGI(TAG, "file still exists");
-//         return;
-//     } else {
-//         ESP_LOGI(TAG, "file doesn't exist, formatting done");
-//     }
-// #endif
-
-//     const char *file_nihao = MOUNT_POINT"/nihao.txt";
-//     memset(data, 0, DATA_SIZE);
-//     snprintf(data, DATA_SIZE, "%s %s!\n", "Nihao", card->cid.name);
-//     ret = overwrite_file(file_nihao, data);
-//     if (ret != ESP_OK) {
-//         return;
-//     }
-
-//     ret = read_file(file_nihao);
-//     if (ret != ESP_OK) {
-//         return;
-//     }
-
-//     esp_vfs_fat_sdcard_unmount(mount_point, card);
-//     ESP_LOGI(TAG, "Card unmounted");
-
-// #if CONFIG_SD_PWR_CTRL_LDO_INTERNAL_IO
-//     ret = sd_pwr_ctrl_del_on_chip_ldo(pwr_ctrl_handle);
-//     if (ret != ESP_OK) {
-//         ESP_LOGE(TAG, "Failed to delete the on-chip LDO power control driver");
-//         return;
-//     }
-// #endif
 }
