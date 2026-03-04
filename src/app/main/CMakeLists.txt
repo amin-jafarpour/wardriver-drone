@@ -1,8 +1,8 @@
-set(srcs "main.c")
+set(srcs "main.c" "nmea_parser.c")
 
 idf_component_register(SRCS ${srcs}
                        INCLUDE_DIRS "."
-                       REQUIRES fatfs 
+                       REQUIRES esp_event esp_driver_uart fatfs  
                        PRIV_REQUIRES esp_wifi nvs_flash
                        WHOLE_ARCHIVE)
 

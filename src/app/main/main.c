@@ -15,6 +15,11 @@
 #include "nvs_flash.h"
 #include "regex.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include "nmea_parser.h"
+
+
 
 #if SOC_SDMMC_IO_POWER_EXTERNAL
 #include "sd_pwr_ctrl_by_on_chip_ldo.h"
@@ -70,6 +75,9 @@ pin_configuration_t config = {
 #define CHANNEL_LIST_SIZE 3
 static uint8_t channel_list[CHANNEL_LIST_SIZE] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}; // {1, 6, 11};
 #endif 
+
+#define TIME_ZONE (-8)   //Vancouver Time
+#define YEAR_BASE (2000) //date in GPS starts from 2000
 
 
 extern const char *TAG;
@@ -286,9 +294,57 @@ void sdcard_setup(sdcard_callback callback)
     callback(card);
 }
 
+static void gps_event_handler(void *event_handler_arg, esp_event_base_t event_base, int32_t event_id, void *event_data)
+{
+    gps_t *gps = NULL;
+    switch (event_id) {
+    case GPS_UPDATE:
+        gps = (gps_t *)event_data;
+        /* print information parsed from GPS statements */
+        ESP_LOGI(TAG, "%d/%d/%d %d:%d:%d => \r\n"
+                 "\t\t\t\t\t\tlatitude   = %.05f°N\r\n"
+                 "\t\t\t\t\t\tlongitude = %.05f°E\r\n"
+                 "\t\t\t\t\t\taltitude   = %.02fm\r\n"
+                 "\t\t\t\t\t\tspeed      = %fm/s",
+                 gps->date.year + YEAR_BASE, gps->date.month, gps->date.day,
+                 gps->tim.hour + TIME_ZONE, gps->tim.minute, gps->tim.second,
+                 gps->latitude, gps->longitude, gps->altitude, gps->speed);
+        break;
+    case GPS_UNKNOWN:
+        /* print unknown statements */
+        ESP_LOGW(TAG, "Unknown statement:%s", (char *)event_data);
+        break;
+    default:
+        break;
+    }
+}
 
 void app_main(void)
 {
-
+    nmea_parser_config_t config = NMEA_PARSER_CONFIG_DEFAULT();
+    nmea_parser_handle_t nmea_hdl = nmea_parser_init(&config);
+    nmea_parser_add_handler(nmea_hdl, gps_event_handler, NULL);
     sdcard_setup(wifi_scan);
+
 }
+
+
+/////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+// void deinit()
+// {
+//     vTaskDelay(10000 / portTICK_PERIOD_MS);
+//     nmea_parser_remove_handler(nmea_hdl, gps_event_handler);
+//     nmea_parser_deinit(nmea_hdl);
+// }
