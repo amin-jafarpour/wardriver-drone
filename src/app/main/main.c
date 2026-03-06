@@ -151,7 +151,9 @@ void setup_wifi_stack()
 void process_wifi_ap_record(FILE *f, wifi_ap_record_t *ap_record, gps_t* gps_ptr)
 {
     // date,time,latitude,longitude,altitude,speed,bssid,ssid,primary-channel,second-channel,
-    // rssi,authmode,pairwise-cipher,group-cipher,ant,Country-code,
+    // rssi,authmode,pairwise-cipher,group-cipher,ant,Country-code,country-start-channel,
+    // country-end-channel,max-tx-power,country-policy,wifi-AP-HE,bss-color,partial-bss-color,
+    // bss-color-disabled,bssid-index
     fprintf(f,"%d/%d/%d,%d:%d:%d,%f,%f,%f,%f,", 
         gps_ptr->date.year + YEAR_BASE, gps_ptr->date.month, gps_ptr->date.day,
                 gps_ptr->tim.hour + TIME_ZONE, gps_ptr->tim.minute, gps_ptr->tim.second,
@@ -337,19 +339,46 @@ void process_wifi_ap_record(FILE *f, wifi_ap_record_t *ap_record, gps_t* gps_ptr
 
     if(ap_record->ant == WIFI_ANT_ANT0)
     {
-        fprintf(f, "WIFI_ANT_ANT0");
+        fprintf(f, "WIFI_ANT_ANT0,");
     } else if(ap_record->ant == WIFI_ANT_ANT1)
     {
-        fprintf(f, "WIFI_ANT_ANT1");
+        fprintf(f, "WIFI_ANT_ANT1,");
     } else if(ap_record->ant == WIFI_ANT_MAX)
     {
-        fprintf(f, "WIFI_ANT_MAX");
+        fprintf(f, "WIFI_ANT_MAX,");
     } else
     {
-        fprintf(f, "WIFI_ANT_ERROR");
+        fprintf(f, "WIFI_ANT_ERROR,");
     }
 
-    fprintf(f, "%3s", ap_record->country.cc);
+    fprintf(f, "%3s,", ap_record->country.cc);
+
+    fprintf(f, "%u,", ap_record->country.schan);
+
+    fprintf(f, "%u,", ap_record->country.nchan);
+
+    fprintf(f, "%d", ap_record->country.max_tx_power);
+
+    if(ap_record->country.policy == WIFI_COUNTRY_POLICY_AUTO)
+    {
+         fprintf(f, "WIFI_COUNTRY_POLICY_AUTO");
+    } else if(ap_record->country.policy == WIFI_COUNTRY_POLICY_MANUAL)
+    {
+         fprintf(f, "WIFI_COUNTRY_POLICY_MANUAL");
+    } else
+    {
+         fprintf(f, "WIFI_COUNTRY_POLICY_ERROR");
+    }
+
+    // Wi-Fi AP HE Info
+    fprintf(f, "%u", ap_record->he_ap.bss_color);
+
+    fprintf(f, "%u", ap_record->he_ap.partial_bss_color);
+
+    fprintf(f, "%u", ap_record->he_ap.bss_color_disabled);
+
+    fprintf(f, "%u", ap_record->he_ap.bssid_index);
+
 
 
 
