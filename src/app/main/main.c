@@ -151,7 +151,7 @@ void setup_wifi_stack()
 void process_wifi_ap_record(FILE *f, wifi_ap_record_t *ap_record, gps_t* gps_ptr)
 {
     // date,time,latitude,longitude,altitude,speed,bssid,ssid,primary-channel,second-channel,
-    // rssi,authmode,pairwise-cipher,group-cipher,  
+    // rssi,authmode,pairwise-cipher,group-cipher,ant,
     fprintf(f,"%d/%d/%d,%d:%d:%d,%f,%f,%f,%f,", 
         gps_ptr->date.year + YEAR_BASE, gps_ptr->date.month, gps_ptr->date.day,
                 gps_ptr->tim.hour + TIME_ZONE, gps_ptr->tim.minute, gps_ptr->tim.second,
@@ -334,6 +334,22 @@ void process_wifi_ap_record(FILE *f, wifi_ap_record_t *ap_record, gps_t* gps_ptr
     {
         fprintf(f, "WIFI_CIPHER_TYPE_ERROR,"); 
     }
+
+    if(ap_record->ant == WIFI_ANT_ANT0)
+    {
+        fprintf(f, "WIFI_ANT_ANT0");
+    } else if(ap_record->ant == WIFI_ANT_ANT1)
+    {
+        fprintf(f, "WIFI_ANT_ANT1");
+    } else if(ap_record->ant == WIFI_ANT_MAX)
+    {
+        fprintf(f, "WIFI_ANT_MAX");
+    } else
+    {
+        fprintf(f, "WIFI_ANT_ERROR");
+    }
+
+    
 
 
 
