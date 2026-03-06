@@ -151,7 +151,7 @@ void setup_wifi_stack()
 void process_wifi_ap_record(FILE *f, wifi_ap_record_t *ap_record, gps_t* gps_ptr)
 {
     // date,time,latitude,longitude,altitude,speed,bssid,ssid,primary-channel,second-channel,
-    // rssi,authmode,pairwise-cipher,group-cipher,ant,
+    // rssi,authmode,pairwise-cipher,group-cipher,ant,Country-code,
     fprintf(f,"%d/%d/%d,%d:%d:%d,%f,%f,%f,%f,", 
         gps_ptr->date.year + YEAR_BASE, gps_ptr->date.month, gps_ptr->date.day,
                 gps_ptr->tim.hour + TIME_ZONE, gps_ptr->tim.minute, gps_ptr->tim.second,
@@ -349,7 +349,11 @@ void process_wifi_ap_record(FILE *f, wifi_ap_record_t *ap_record, gps_t* gps_ptr
         fprintf(f, "WIFI_ANT_ERROR");
     }
 
-    
+    fprintf(f, "%3s", ap_record->country.cc);
+
+
+
+
 
 
 
