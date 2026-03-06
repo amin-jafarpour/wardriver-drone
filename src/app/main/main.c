@@ -150,8 +150,8 @@ void setup_wifi_stack()
 
 void process_wifi_ap_record(FILE *f, wifi_ap_record_t *ap_record, gps_t* gps_ptr)
 {
-    // date,time,latitude,longitude,altitude,speed,bssid,ssid,primary-channel,second-channel,\
-    // rssi,
+    // date,time,latitude,longitude,altitude,speed,bssid,ssid,primary-channel,second-channel,
+    // rssi,authmode,pairwise-cipher,
     fprintf(f,"%d/%d/%d,%d:%d:%d,%f,%f,%f,%f,", 
         gps_ptr->date.year + YEAR_BASE, gps_ptr->date.month, gps_ptr->date.day,
                 gps_ptr->tim.hour + TIME_ZONE, gps_ptr->tim.minute, gps_ptr->tim.second,
@@ -171,21 +171,143 @@ void process_wifi_ap_record(FILE *f, wifi_ap_record_t *ap_record, gps_t* gps_ptr
 
     if(ap_record->second == WIFI_SECOND_CHAN_NONE)
     {
-        fprintf(f, "%s,", "WIFI_SECOND_CHAN_NONE,");
+        fprintf(f, "WIFI_SECOND_CHAN_NONE,");
     } else if(ap_record->second == WIFI_SECOND_CHAN_ABOVE)
     {
-        fprintf(f, "%s,", "WIFI_SECOND_CHAN_ABOVE,");
+        fprintf(f, "WIFI_SECOND_CHAN_ABOVE,");
     } else if(ap_record->second == WIFI_SECOND_CHAN_BELOW)
     {
-        fprintf(f, "%s,", "WIFI_SECOND_CHAN_BELOW,");
+        fprintf(f, "WIFI_SECOND_CHAN_BELOW,");
     } else
     {
-        fprintf(f, "%s,", "WIFI_SECOND_CHAN_UNKNOWN,");
+        fprintf(f, "WIFI_SECOND_CHAN_ERROR,");
     }
 
     fprintf(f, "%u,", ap_record->rssi);
 
+    if(ap_record->authmode == WIFI_AUTH_OPEN)
+    {
+         fprintf(f, "WIFI_AUTH_OPEN,");
+    } else if(ap_record->authmode == WIFI_AUTH_WEP)
+    {
+        fprintf(f, "WIFI_AUTH_WEP,");
+    } else if(ap_record->authmode == WIFI_AUTH_WPA_PSK)
+    {
+        fprintf(f, "WIFI_AUTH_WPA_PSK,");
+    } else if(ap_record->authmode == WIFI_AUTH_WPA2_PSK)
+    {
+        fprintf(f,"WIFI_AUTH_WPA2_PSK,");
+    } else if(ap_record->authmode == WIFI_AUTH_WPA_WPA2_PSK)
+    {
+        fprintf(f, "WIFI_AUTH_WPA_WPA2_PSK,");
+    } else if(ap_record->authmode == WIFI_AUTH_ENTERPRISE)
+    {
+        fprintf(f, "WIFI_AUTH_ENTERPRISE,");
+    } else if(ap_record->authmode == WIFI_AUTH_WPA2_ENTERPRISE)
+    {
+        fprintf(f, "WIFI_AUTH_WPA2_ENTERPRISE,");
+    } else if(ap_record->authmode == WIFI_AUTH_WPA3_PSK)
+    {
+        fprintf(f, "WIFI_AUTH_WPA3_PSK,");
+    } else if(ap_record->authmode == WIFI_AUTH_WPA2_WPA3_PSK)
+    {
+        fprintf(f, "WIFI_AUTH_WPA2_WPA3_PSK,");
+    } else if(ap_record->authmode == WIFI_AUTH_WAPI_PSK)
+    {
+        fprintf(f, "WIFI_AUTH_WAPI_PSK,");
+    } else if(ap_record->authmode == WIFI_AUTH_OWE)
+    {
+        fprintf(f, "WIFI_AUTH_OWE,");
+    } else if(ap_record->authmode == WIFI_AUTH_WPA3_ENT_192)
+    {
+        fprintf(f, "WIFI_AUTH_WPA3_ENT_192,");
+    } else if(ap_record->authmode == WIFI_AUTH_WPA3_EXT_PSK)
+    {
+        fprintf(f, "WIFI_AUTH_WPA3_EXT_PSK,");
+    } else if(ap_record->authmode == WIFI_AUTH_WPA3_EXT_PSK_MIXED_MODE)
+    {
+        fprintf(f, "WIFI_AUTH_WPA3_EXT_PSK_MIXED_MODE,");
+    } else if(ap_record->authmode == WIFI_AUTH_DPP)
+    {
+        fprintf(f, "WIFI_AUTH_DPP,");
+    } else if(ap_record->authmode == WIFI_AUTH_WPA3_ENTERPRISE)
+    {
+        fprintf(f, "WIFI_AUTH_WPA3_ENTERPRISE,");
+    } else if(ap_record->authmode == WIFI_AUTH_WPA2_WPA3_ENTERPRISE)
+    {
+        fprintf(f, "WIFI_AUTH_WPA2_WPA3_ENTERPRISE,");
+    } else if(ap_record->authmode == WIFI_AUTH_WPA_ENTERPRISE)
+    {
+        fprintf(f, "WIFI_AUTH_WPA_ENTERPRISE,");
+    } else if(ap_record->authmode ==  WIFI_AUTH_MAX)
+    {
+        fprintf(f, "WIFI_AUTH_MAX,");
+    } else
+    {
+        fprintf(f, "UNKNOWN_AUTH_ERROR,");        
+    }
+
+    if(ap_record->pairwise_cipher == WIFI_CIPHER_TYPE_NONE)
+    {
+        fprintf(f, "WIFI_CIPHER_TYPE_NONE,"); 
+    } else if(ap_record->pairwise_cipher == WIFI_CIPHER_TYPE_WEP40)
+    {
+        fprintf(f, "WIFI_CIPHER_TYPE_WEP40,"); 
+    } else if(ap_record->pairwise_cipher == WIFI_CIPHER_TYPE_WEP104)
+    {
+        fprintf(f, "WIFI_CIPHER_TYPE_WEP104,");         
+    } else if(ap_record->pairwise_cipher == WIFI_CIPHER_TYPE_TKIP)
+    {
+        fprintf(f, "WIFI_CIPHER_TYPE_TKIP,");         
+    } else if(ap_record->pairwise_cipher == WIFI_CIPHER_TYPE_CCMP)
+    {
+        fprintf(f, "WIFI_CIPHER_TYPE_CCMP,");         
+    } else if(ap_record->pairwise_cipher == WIFI_CIPHER_TYPE_TKIP_CCMP)
+    {
+        fprintf(f, "WIFI_CIPHER_TYPE_TKIP_CCMP,");         
+    } else if(ap_record->pairwise_cipher == WIFI_CIPHER_TYPE_AES_CMAC128)
+    {
+        fprintf(f, "WIFI_CIPHER_TYPE_AES_CMAC128,");         
+    } else if(ap_record->pairwise_cipher == WIFI_CIPHER_TYPE_SMS4)
+    {
+        fprintf(f, "WIFI_CIPHER_TYPE_SMS4,");         
+    } else if(ap_record->pairwise_cipher == WIFI_CIPHER_TYPE_GCMP)
+    {
+        fprintf(f, "WIFI_CIPHER_TYPE_GCMP,");         
+    } else if(ap_record->pairwise_cipher == WIFI_CIPHER_TYPE_GCMP256)
+    {
+        fprintf(f, "WIFI_CIPHER_TYPE_GCMP256,");         
+    } else if(ap_record->pairwise_cipher == WIFI_CIPHER_TYPE_AES_GMAC128)
+    {
+        fprintf(f, "WIFI_CIPHER_TYPE_AES_GMAC128,");         
+    } else if(ap_record->pairwise_cipher == WIFI_CIPHER_TYPE_AES_GMAC256)
+    {
+        fprintf(f, "WIFI_CIPHER_TYPE_AES_GMAC256,");         
+    } else if(ap_record->pairwise_cipher == WIFI_CIPHER_TYPE_UNKNOWN)
+    {
+        fprintf(f, "WIFI_CIPHER_TYPE_UNKNOWN,");         
+    } else
+    {
+        fprintf(f, "WIFI_CIPHER_TYPE_ERROR,");         
+    }
+
     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
