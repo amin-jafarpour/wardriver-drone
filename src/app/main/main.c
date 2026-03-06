@@ -198,6 +198,17 @@ void wifi_scan(sdmmc_card_t *card)
                 gps.tim.hour + TIME_ZONE, gps.tim.minute, gps.tim.second,
                 gps.latitude, gps.longitude, gps.altitude, gps.speed);
 
+            ESP_LOGI(TAG, "%d/%d/%d %d:%d:%d => \r\n"
+                "\t\t\t\t\t\tlatitude   = %.05f°N\r\n"
+                "\t\t\t\t\t\tlongitude = %.05f°E\r\n"
+                "\t\t\t\t\t\taltitude   = %.02fm\r\n"
+                "\t\t\t\t\t\tspeed      = %fm/s",
+                gps.date.year + YEAR_BASE, gps.date.month, gps.date.day,
+                gps.tim.hour + TIME_ZONE, gps.tim.minute, gps.tim.second,
+                gps.latitude, gps.longitude, gps.altitude, gps.speed);
+
+
+
             for (int i = 0; i < number; i++) 
             {
                 uint8_t *mac = ap_info[i].bssid;
