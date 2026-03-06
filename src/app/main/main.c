@@ -153,7 +153,7 @@ void process_wifi_ap_record(FILE *f, wifi_ap_record_t *ap_record, gps_t* gps_ptr
     // date,time,latitude,longitude,altitude,speed,bssid,ssid,primary-channel,second-channel,
     // rssi,authmode,pairwise-cipher,group-cipher,ant,Country-code,country-start-channel,
     // country-end-channel,max-tx-power,country-policy,wifi-AP-HE,bss-color,partial-bss-color,
-    // bss-color-disabled,bssid-index
+    // bss-color-disabled,bssid-index,bandwidth,vht_ch_freq1,vht_ch_freq2,flags
     fprintf(f,"%d/%d/%d,%d:%d:%d,%f,%f,%f,%f,", 
         gps_ptr->date.year + YEAR_BASE, gps_ptr->date.month, gps_ptr->date.day,
                 gps_ptr->tim.hour + TIME_ZONE, gps_ptr->tim.minute, gps_ptr->tim.second,
@@ -361,49 +361,55 @@ void process_wifi_ap_record(FILE *f, wifi_ap_record_t *ap_record, gps_t* gps_ptr
 
     if(ap_record->country.policy == WIFI_COUNTRY_POLICY_AUTO)
     {
-         fprintf(f, "WIFI_COUNTRY_POLICY_AUTO");
+         fprintf(f, "WIFI_COUNTRY_POLICY_AUTO,");
     } else if(ap_record->country.policy == WIFI_COUNTRY_POLICY_MANUAL)
     {
-         fprintf(f, "WIFI_COUNTRY_POLICY_MANUAL");
+         fprintf(f, "WIFI_COUNTRY_POLICY_MANUAL,");
     } else
     {
-         fprintf(f, "WIFI_COUNTRY_POLICY_ERROR");
+         fprintf(f, "WIFI_COUNTRY_POLICY_ERROR,");
     }
 
     // Wi-Fi AP HE Info
-    fprintf(f, "%u", ap_record->he_ap.bss_color);
+    fprintf(f, "%u,", ap_record->he_ap.bss_color);
 
-    fprintf(f, "%u", ap_record->he_ap.partial_bss_color);
+    fprintf(f, "%u,", ap_record->he_ap.partial_bss_color);
 
-    fprintf(f, "%u", ap_record->he_ap.bss_color_disabled);
+    fprintf(f, "%u,", ap_record->he_ap.bss_color_disabled);
 
-    fprintf(f, "%u", ap_record->he_ap.bssid_index);
+    fprintf(f, "%u,", ap_record->he_ap.bssid_index);
 
-//https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/network/esp_wifi.html#_CPPv416wifi_ap_record_t
-// left -> bandwidth
+    if(ap_record->bandwidth == WIFI_BW_HT20)
+    {
+        fprintf(f, "WIFI_BW_HT20,");
+    } else if(ap_record->bandwidth == WIFI_BW20)
+    {
+        fprintf(f, "WIFI_BW20,");
+    } else if(ap_record->bandwidth == WIFI_BW_HT40)
+    {
+        fprintf(f, "WIFI_BW_HT40,");
+    } else if(ap_record->bandwidth == WIFI_BW40)
+    {
+        fprintf(f, "WIFI_BW40");
+    } else if(ap_record->bandwidth == WIFI_BW80)
+    {
+        fprintf(f, "WIFI_BW80,");
+    } else if(ap_record->bandwidth == WIFI_BW160)
+    {
+        fprintf(f, "WIFI_BW160,");
+    } else if(ap_record->bandwidth == WIFI_BW80_BW80)
+    {
+        fprintf(f, "WIFI_BW80_BW80,");
+    } else
+    {
+        fprintf(f, "WIFI_BW_ERROR,");
+    }
 
+    fprintf(f, "%u,", ap_record->vht_ch_freq1);
 
+    fprintf(f, "%u,", ap_record->vht_ch_freq2);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    printf("%x,\n", ap_record->phy_11b);
 
 }
 
@@ -412,7 +418,6 @@ void wifi_scan(sdmmc_card_t *card)
 
     setup_nvs();
     setup_wifi_stack();
-
 
     uint16_t number = CONFIG_SCAN_LIST_SIZE;
     wifi_ap_record_t ap_info[CONFIG_SCAN_LIST_SIZE];
