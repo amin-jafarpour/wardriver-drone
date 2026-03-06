@@ -409,7 +409,7 @@ void process_wifi_ap_record(FILE *f, wifi_ap_record_t *ap_record, gps_t* gps_ptr
 
     fprintf(f, "%u,", ap_record->vht_ch_freq2);
 
-    printf("%x,\n", ap_record->phy_11b);
+    printf("%x\n", ap_record->phy_11b);
 
 }
 
