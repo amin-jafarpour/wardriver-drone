@@ -7,6 +7,7 @@
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/event_groups.h"
+#include "freertos/semphr.h"
 
 #include "driver/gpio.h"
 #include "esp_log.h"
@@ -79,6 +80,7 @@
 #endif
 
 static const char *TAG = "app";
+SemaphoreHandle_t gps_ready_sem;
 static gps_t gps;
 
 #ifdef CONFIG_USE_SCAN_CHANNEL_BITMAP
@@ -185,24 +187,26 @@ void wifi_scan(sdmmc_card_t *card)
         ESP_ERROR_CHECK(esp_wifi_scan_get_ap_records(&number, ap_info));
         ESP_LOGI(TAG, "Total APs scanned = %u, actual AP number ap_info holds = %u", ap_count, number);
 
-
-        for (int i = 0; i < number; i++) 
+        if(xSemaphoreTake(gps_ready_sem, portMAX_DELAY))
         {
-            uint8_t *mac = ap_info[i].bssid;
-            fprintf(f, "%02X:%02X:%02X:%02X:%02X:%02X\n",
-                mac[0], mac[1], mac[2],
-                mac[3], mac[4], mac[5]);
+            fprintf(f,"%d/%d/%d %d:%d:%d => \r\n"
+                "\t\t\t\t\t\tlatitude   = %.05f°N\r\n"
+                "\t\t\t\t\t\tlongitude = %.05f°E\r\n"
+                "\t\t\t\t\t\taltitude   = %.02fm\r\n"
+                "\t\t\t\t\t\tspeed      = %fm/s",
+                gps.date.year + YEAR_BASE, gps.date.month, gps.date.day,
+                gps.tim.hour + TIME_ZONE, gps.tim.minute, gps.tim.second,
+                gps.latitude, gps.longitude, gps.altitude, gps.speed);
 
+            for (int i = 0; i < number; i++) 
+            {
+                uint8_t *mac = ap_info[i].bssid;
+                fprintf(f, "%02X:%02X:%02X:%02X:%02X:%02X\n",
+                    mac[0], mac[1], mac[2],
+                    mac[3], mac[4], mac[5]);
+
+            }
         }
-
-        fprintf(f,"%d/%d/%d %d:%d:%d => \r\n"
-            "\t\t\t\t\t\tlatitude   = %.05f°N\r\n"
-            "\t\t\t\t\t\tlongitude = %.05f°E\r\n"
-            "\t\t\t\t\t\taltitude   = %.02fm\r\n"
-            "\t\t\t\t\t\tspeed      = %fm/s",
-            gps.date.year + YEAR_BASE, gps.date.month, gps.date.day,
-            gps.tim.hour + TIME_ZONE, gps.tim.minute, gps.tim.second,
-            gps.latitude, gps.longitude, gps.altitude, gps.speed);
 
         vTaskDelay(pdMS_TO_TICKS(1000));
         fflush(f);
@@ -318,12 +322,14 @@ static void gps_event_handler(void *event_handler_arg, esp_event_base_t event_ba
         // ESP_LOGW(TAG, "Unknown statement:%s", (char *)event_data);
         break;
     default:
+        xSemaphoreGive(gps_ready_sem);
         break;
     }
 }
 
 void app_main(void)
 {
+    gps_ready_sem = xSemaphoreCreateBinary();
     nmea_parser_config_t config = NMEA_PARSER_CONFIG_DEFAULT();
     nmea_parser_handle_t nmea_hdl = nmea_parser_init(&config);
     nmea_parser_add_handler(nmea_hdl, gps_event_handler, NULL);
