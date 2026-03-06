@@ -148,11 +148,47 @@ void setup_wifi_stack()
     ESP_ERROR_CHECK(esp_wifi_start());
 }
 
-void process_wifi_ap_record(FILE *f, wifi_ap_record_t *ap_record)
+void process_wifi_ap_record(FILE *f, wifi_ap_record_t *ap_record, gps_t* gps_ptr)
 {
-    fprintf(f, "%02X:%02X:%02X:%02X:%02X:%02X\n",
+    // date,time,latitude,longitude,altitude,speed,bssid,ssid,primary-channel,second-channel,\
+    // rssi,
+    fprintf(f,"%d/%d/%d,%d:%d:%d,%f,%f,%f,%f,", 
+        gps_ptr->date.year + YEAR_BASE, gps_ptr->date.month, gps_ptr->date.day,
+                gps_ptr->tim.hour + TIME_ZONE, gps_ptr->tim.minute, gps_ptr->tim.second,
+                gps_ptr->latitude, 
+                gps_ptr->longitude, 
+                gps_ptr->altitude, 
+                gps_ptr->speed
+            );
+
+    fprintf(f, "%02X:%02X:%02X:%02X:%02X:%02X,",
                     ap_record->bssid[0], ap_record->bssid[1], ap_record->bssid[2],
                     ap_record->bssid[3], ap_record->bssid[4], ap_record->bssid[5]);
+    
+    fprintf(f, "%.33s,", ap_record->ssid);
+
+    fprintf(f, "%u,", ap_record->primary);
+
+    if(ap_record->second == WIFI_SECOND_CHAN_NONE)
+    {
+        fprintf(f, "%s,", "WIFI_SECOND_CHAN_NONE,");
+    } else if(ap_record->second == WIFI_SECOND_CHAN_ABOVE)
+    {
+        fprintf(f, "%s,", "WIFI_SECOND_CHAN_ABOVE,");
+    } else if(ap_record->second == WIFI_SECOND_CHAN_BELOW)
+    {
+        fprintf(f, "%s,", "WIFI_SECOND_CHAN_BELOW,");
+    } else
+    {
+        fprintf(f, "%s,", "WIFI_SECOND_CHAN_UNKNOWN,");
+    }
+
+    fprintf(f, "%u,", ap_record->rssi);
+
+    
+
+
+
 }
 
 void wifi_scan(sdmmc_card_t *card)
@@ -196,15 +232,6 @@ void wifi_scan(sdmmc_card_t *card)
 
         if(xSemaphoreTake(gps_ready_sem, pdMS_TO_TICKS(2000))) // portMAX_DELAY
         {
-            fprintf(f,"%d/%d/%d %d:%d:%d => \r\n"
-                "\t\t\t\t\t\tlatitude   = %.05f°N\r\n"
-                "\t\t\t\t\t\tlongitude = %.05f°E\r\n"
-                "\t\t\t\t\t\taltitude   = %.02fm\r\n"
-                "\t\t\t\t\t\tspeed      = %fm/s",
-                gps.date.year + YEAR_BASE, gps.date.month, gps.date.day,
-                gps.tim.hour + TIME_ZONE, gps.tim.minute, gps.tim.second,
-                gps.latitude, gps.longitude, gps.altitude, gps.speed);
-
             ESP_LOGI(TAG, "%d/%d/%d %d:%d:%d => \r\n"
                 "\t\t\t\t\t\tlatitude   = %.05f°N\r\n"
                 "\t\t\t\t\t\tlongitude = %.05f°E\r\n"
@@ -214,11 +241,9 @@ void wifi_scan(sdmmc_card_t *card)
                 gps.tim.hour + TIME_ZONE, gps.tim.minute, gps.tim.second,
                 gps.latitude, gps.longitude, gps.altitude, gps.speed);
 
-
-
             for (int i = 0; i < number; i++) 
             {
-                process_wifi_ap_record(f, &ap_info[i]);
+                process_wifi_ap_record(f, &ap_info[i], &gps);
             }
         }
 
@@ -334,7 +359,7 @@ static void gps_event_handler(void *event_handler_arg, esp_event_base_t event_ba
         gps = *((gps_t *)event_data);
         break;
     case GPS_UNKNOWN:
-        // ESP_LOGW(TAG, "Unknown statement:%s", (char *)event_data);
+        ESP_LOGW(TAG, "Unknown statement:%s", (char *)event_data);
         break;
     default:
         break;
