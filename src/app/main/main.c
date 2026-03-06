@@ -187,7 +187,7 @@ void wifi_scan(sdmmc_card_t *card)
         ESP_ERROR_CHECK(esp_wifi_scan_get_ap_records(&number, ap_info));
         ESP_LOGI(TAG, "Total APs scanned = %u, actual AP number ap_info holds = %u", ap_count, number);
 
-        if(xSemaphoreTake(gps_ready_sem, portMAX_DELAY))
+        if(xSemaphoreTake(gps_ready_sem, pdMS_TO_TICKS(2000))) // portMAX_DELAY
         {
             fprintf(f,"%d/%d/%d %d:%d:%d => \r\n"
                 "\t\t\t\t\t\tlatitude   = %.05f°N\r\n"
@@ -314,6 +314,7 @@ void sdcard_setup(sdcard_callback callback)
 
 static void gps_event_handler(void *event_handler_arg, esp_event_base_t event_base, int32_t event_id, void *event_data)
 {
+    xSemaphoreGive(gps_ready_sem);
     switch (event_id) {
     case GPS_UPDATE:
         gps = *((gps_t *)event_data);
@@ -322,7 +323,6 @@ static void gps_event_handler(void *event_handler_arg, esp_event_base_t event_ba
         // ESP_LOGW(TAG, "Unknown statement:%s", (char *)event_data);
         break;
     default:
-        xSemaphoreGive(gps_ready_sem);
         break;
     }
 }
