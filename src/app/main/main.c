@@ -151,7 +151,7 @@ void setup_wifi_stack()
 void process_wifi_ap_record(FILE *f, wifi_ap_record_t *ap_record, gps_t* gps_ptr)
 {
     // date,time,latitude,longitude,altitude,speed,bssid,ssid,primary-channel,second-channel,
-    // rssi,authmode,pairwise-cipher,
+    // rssi,authmode,pairwise-cipher,group-cipher,  
     fprintf(f,"%d/%d/%d,%d:%d:%d,%f,%f,%f,%f,", 
         gps_ptr->date.year + YEAR_BASE, gps_ptr->date.month, gps_ptr->date.day,
                 gps_ptr->tim.hour + TIME_ZONE, gps_ptr->tim.minute, gps_ptr->tim.second,
@@ -291,7 +291,51 @@ void process_wifi_ap_record(FILE *f, wifi_ap_record_t *ap_record, gps_t* gps_ptr
         fprintf(f, "WIFI_CIPHER_TYPE_ERROR,");         
     }
 
-    
+    if(ap_record->group_cipher == WIFI_CIPHER_TYPE_NONE)
+    {
+        fprintf(f, "WIFI_CIPHER_TYPE_NONE,");
+    } else if(ap_record->group_cipher == WIFI_CIPHER_TYPE_WEP40)
+    {
+        fprintf(f, "WIFI_CIPHER_TYPE_WEP40,");
+    } else if(ap_record->group_cipher == WIFI_CIPHER_TYPE_WEP104)
+    {
+        fprintf(f, "WIFI_CIPHER_TYPE_WEP104,");      
+    } else if(ap_record->group_cipher == WIFI_CIPHER_TYPE_TKIP)
+    {
+        fprintf(f, "WIFI_CIPHER_TYPE_TKIP,");        
+    } else if(ap_record->group_cipher == WIFI_CIPHER_TYPE_CCMP)
+    {
+        fprintf(f, "WIFI_CIPHER_TYPE_CCMP,");       
+    } else if(ap_record->group_cipher == WIFI_CIPHER_TYPE_TKIP_CCMP)
+    {
+        fprintf(f, "WIFI_CIPHER_TYPE_TKIP_CCMP,");    
+    } else if(ap_record->group_cipher == WIFI_CIPHER_TYPE_AES_CMAC128)
+    {
+        fprintf(f, "WIFI_CIPHER_TYPE_AES_CMAC128,");    
+    } else if(ap_record->group_cipher == WIFI_CIPHER_TYPE_SMS4)
+    {
+        fprintf(f, "WIFI_CIPHER_TYPE_SMS4,"); 
+    } else if(ap_record->group_cipher == WIFI_CIPHER_TYPE_GCMP)
+    {
+        fprintf(f, "WIFI_CIPHER_TYPE_GCMP,");  
+    } else if(ap_record->group_cipher == WIFI_CIPHER_TYPE_GCMP256)
+    {
+        fprintf(f, "WIFI_CIPHER_TYPE_GCMP256,");
+    } else if(ap_record->group_cipher == WIFI_CIPHER_TYPE_AES_GMAC128)
+    {
+        fprintf(f, "WIFI_CIPHER_TYPE_AES_GMAC128,");
+    } else if(ap_record->group_cipher == WIFI_CIPHER_TYPE_AES_GMAC256)
+    {
+        fprintf(f, "WIFI_CIPHER_TYPE_AES_GMAC256,");
+    } else if(ap_record->group_cipher == WIFI_CIPHER_TYPE_UNKNOWN)
+    {
+        fprintf(f, "WIFI_CIPHER_TYPE_UNKNOWN,");
+    } else
+    {
+        fprintf(f, "WIFI_CIPHER_TYPE_ERROR,"); 
+    }
+
+
 
 
 
