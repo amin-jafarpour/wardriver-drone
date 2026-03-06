@@ -379,7 +379,8 @@ void process_wifi_ap_record(FILE *f, wifi_ap_record_t *ap_record, gps_t* gps_ptr
 
     fprintf(f, "%u", ap_record->he_ap.bssid_index);
 
-
+//https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/network/esp_wifi.html#_CPPv416wifi_ap_record_t
+// left -> bandwidth
 
 
 
