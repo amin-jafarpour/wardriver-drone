@@ -148,6 +148,13 @@ void setup_wifi_stack()
     ESP_ERROR_CHECK(esp_wifi_start());
 }
 
+void process_wifi_ap_record(FILE *f, wifi_ap_record_t *ap_record)
+{
+    fprintf(f, "%02X:%02X:%02X:%02X:%02X:%02X\n",
+                    ap_record->bssid[0], ap_record->bssid[1], ap_record->bssid[2],
+                    ap_record->bssid[3], ap_record->bssid[4], ap_record->bssid[5]);
+}
+
 void wifi_scan(sdmmc_card_t *card)
 {
 
@@ -211,11 +218,7 @@ void wifi_scan(sdmmc_card_t *card)
 
             for (int i = 0; i < number; i++) 
             {
-                uint8_t *mac = ap_info[i].bssid;
-                fprintf(f, "%02X:%02X:%02X:%02X:%02X:%02X\n",
-                    mac[0], mac[1], mac[2],
-                    mac[3], mac[4], mac[5]);
-
+                process_wifi_ap_record(f, &ap_info[i]);
             }
         }
 
