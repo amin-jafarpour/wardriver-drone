@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <inttypes.h>
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/event_groups.h"
@@ -20,7 +21,6 @@
 #include "esp_vfs_fat.h"
 #include "sdmmc_cmd.h"
 #include "driver/sdmmc_host.h"
-
 #include "nmea_parser.h"
 
 #if SOC_SDMMC_IO_POWER_EXTERNAL
@@ -148,20 +148,78 @@ void setup_wifi_stack()
     ESP_ERROR_CHECK(esp_wifi_start());
 }
 
+static void gps_time_to_vancouver(gps_t *gps, int *year, int *month, int *day, int *hour, int *minute, int *second)
+{
+    int tz = TIME_ZONE;
+
+    *year   = gps->date.year + YEAR_BASE;
+    *month  = gps->date.month;
+    *day    = gps->date.day;
+    *hour   = gps->tim.hour + tz;
+    *minute = gps->tim.minute;
+    *second = gps->tim.second;
+
+    if (*hour < 0)
+    {
+        *hour += 24;
+        (*day)--;
+    }
+
+    if (*hour >= 24)
+    {
+        *hour -= 24;
+        (*day)++;
+    }
+
+    if (*day <= 0)
+    {
+        static const int days_in_month[] =
+        {31,28,31,30,31,30,31,31,30,31,30,31};
+
+        (*month)--;
+
+        if (*month <= 0)
+        {
+            *month = 12;
+            (*year)--;
+        }
+
+        *day = days_in_month[*month - 1];
+    }
+}
+
 void process_wifi_ap_record(FILE *f, wifi_ap_record_t *ap_record, gps_t* gps_ptr)
 {
     // date,time,latitude,longitude,altitude,speed,bssid,ssid,primary-channel,second-channel,
     // rssi,authmode,pairwise-cipher,group-cipher,ant,Country-code,country-start-channel,
     // country-end-channel,max-tx-power,country-policy,wifi-AP-HE,bss-color,partial-bss-color,
     // bss-color-disabled,bssid-index,bandwidth,vht_ch_freq1,vht_ch_freq2,flags
-    fprintf(f,"%d/%d/%d,%d:%d:%d,%f,%f,%f,%f,", 
-        gps_ptr->date.year + YEAR_BASE, gps_ptr->date.month, gps_ptr->date.day,
-                gps_ptr->tim.hour + TIME_ZONE, gps_ptr->tim.minute, gps_ptr->tim.second,
-                gps_ptr->latitude, 
-                gps_ptr->longitude, 
-                gps_ptr->altitude, 
-                gps_ptr->speed
-            );
+
+    int year, month, day, hour, minute, second;
+
+    gps_time_to_vancouver( gps_ptr, &year, &month, &day, &hour, &minute, &second);
+
+    fprintf(f,"%d/%d/%d,%d:%d:%d,%f,%f,%f,%f,",
+        year,
+        month,
+        day,
+        hour,
+        minute,
+        second,
+        gps_ptr->latitude,
+        gps_ptr->longitude,
+        gps_ptr->altitude,
+        gps_ptr->speed
+    );
+
+    // fprintf(f,"%d/%d/%d,%d:%d:%d,%f,%f,%f,%f,", 
+    //     gps_ptr->date.year + YEAR_BASE, gps_ptr->date.month, gps_ptr->date.day,
+    //             gps_ptr->tim.hour + TIME_ZONE, gps_ptr->tim.minute, gps_ptr->tim.second,
+    //             gps_ptr->latitude, 
+    //             gps_ptr->longitude, 
+    //             gps_ptr->altitude, 
+    //             gps_ptr->speed
+    //         );
 
     fprintf(f, "%02X:%02X:%02X:%02X:%02X:%02X,",
                     ap_record->bssid[0], ap_record->bssid[1], ap_record->bssid[2],
@@ -169,7 +227,7 @@ void process_wifi_ap_record(FILE *f, wifi_ap_record_t *ap_record, gps_t* gps_ptr
     
     fprintf(f, "%.33s,", ap_record->ssid);
 
-    fprintf(f, "%u,", ap_record->primary);
+    fprintf(f, "%" PRIu8 ",", ap_record->primary);
 
     if(ap_record->second == WIFI_SECOND_CHAN_NONE)
     {
@@ -185,7 +243,7 @@ void process_wifi_ap_record(FILE *f, wifi_ap_record_t *ap_record, gps_t* gps_ptr
         fprintf(f, "WIFI_SECOND_CHAN_ERROR,");
     }
 
-    fprintf(f, "%u,", ap_record->rssi);
+    fprintf(f, "%" PRIu8 ",", ap_record->rssi);
 
     if(ap_record->authmode == WIFI_AUTH_OPEN)
     {
@@ -351,13 +409,13 @@ void process_wifi_ap_record(FILE *f, wifi_ap_record_t *ap_record, gps_t* gps_ptr
         fprintf(f, "WIFI_ANT_ERROR,");
     }
 
-    fprintf(f, "%3s,", ap_record->country.cc);
+    fprintf(f, "%2s,", ap_record->country.cc);
 
-    fprintf(f, "%u,", ap_record->country.schan);
+    fprintf(f, "%" PRIu8 ",", ap_record->country.schan);
 
-    fprintf(f, "%u,", ap_record->country.nchan);
+    fprintf(f, "%" PRIu8 ",", ap_record->country.nchan);
 
-    fprintf(f, "%d", ap_record->country.max_tx_power);
+    fprintf(f, "%" PRId8 ",", ap_record->country.max_tx_power);
 
     if(ap_record->country.policy == WIFI_COUNTRY_POLICY_AUTO)
     {
@@ -371,13 +429,13 @@ void process_wifi_ap_record(FILE *f, wifi_ap_record_t *ap_record, gps_t* gps_ptr
     }
 
     // Wi-Fi AP HE Info
-    fprintf(f, "%u,", ap_record->he_ap.bss_color);
+    fprintf(f, "%" PRIu8 ",", ap_record->he_ap.bss_color);
 
-    fprintf(f, "%u,", ap_record->he_ap.partial_bss_color);
+    fprintf(f, "%" PRIu8 ",", ap_record->he_ap.partial_bss_color);
 
-    fprintf(f, "%u,", ap_record->he_ap.bss_color_disabled);
+    fprintf(f, "%" PRIu8 ",", ap_record->he_ap.bss_color_disabled);
 
-    fprintf(f, "%u,", ap_record->he_ap.bssid_index);
+    fprintf(f, "%" PRIu8 ",", ap_record->he_ap.bssid_index);
 
     if(ap_record->bandwidth == WIFI_BW_HT20)
     {
@@ -405,11 +463,11 @@ void process_wifi_ap_record(FILE *f, wifi_ap_record_t *ap_record, gps_t* gps_ptr
         fprintf(f, "WIFI_BW_ERROR,");
     }
 
-    fprintf(f, "%u,", ap_record->vht_ch_freq1);
+    fprintf(f, "%" PRIu8 ",", ap_record->vht_ch_freq1);
 
-    fprintf(f, "%u,", ap_record->vht_ch_freq2);
+    fprintf(f, "%" PRIu8 ",", ap_record->vht_ch_freq2);
 
-    printf("%x\n", ap_record->phy_11b);
+    fprintf(f, "%x\r\n", ap_record->phy_11b);
 
 }
 
@@ -467,10 +525,9 @@ void wifi_scan(sdmmc_card_t *card)
                 process_wifi_ap_record(f, &ap_info[i], &gps);
             }
         }
-
-        vTaskDelay(pdMS_TO_TICKS(1000));
         fflush(f);
         fclose(f);
+        vTaskDelay(pdMS_TO_TICKS(1000));
     }    
 }
 
