@@ -409,7 +409,7 @@ void process_wifi_ap_record(FILE *f, wifi_ap_record_t *ap_record, gps_t* gps_ptr
         fprintf(f, "WIFI_ANT_ERROR,");
     }
 
-    fprintf(f, "%2s,", ap_record->country.cc);
+    fprintf(f, "%.2s,", ap_record->country.cc);
 
     fprintf(f, "%" PRIu8 ",", ap_record->country.schan);
 
