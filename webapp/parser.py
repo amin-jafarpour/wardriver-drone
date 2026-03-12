@@ -36,7 +36,8 @@ class WifiAuthMode(Enum):
     # WPA3-Enterprise Transition Mode 
     WIFI_AUTH_WPA2_WPA3_ENTERPRISE = "WIFI_AUTH_WPA2_WPA3_ENTERPRISE"
     WIFI_AUTH_WPA_ENTERPRISE = "WIFI_AUTH_WPA_ENTERPRISE"
-    WIFI_AUTH_MAX = "WIFI_AUTH_MAX"
+    # Invalid authmode
+    WIFI_AUTH_MAX = "WIFI_AUTH_MAX" 
 
     class PairwiseCipherType(Enum):
         WIFI_CIPHER_TYPE_NONE = "WIFI_CIPHER_TYPE_NONE"
@@ -53,7 +54,7 @@ class WifiAuthMode(Enum):
         WIFI_CIPHER_TYPE_AES_GMAC256 = "WIFI_CIPHER_TYPE_AES_GMAC256"
         WIFI_CIPHER_TYPE_UNKNOWN = "WIFI_CIPHER_TYPE_UNKNOWN"
 
-    class GroupwiseCipherType(Enum):
+    class GroupCipherType(Enum):
         WIFI_CIPHER_TYPE_NONE = "WIFI_CIPHER_TYPE_NONE"
         WIFI_CIPHER_TYPE_WEP40 = "WIFI_CIPHER_TYPE_WEP40"
         WIFI_CIPHER_TYPE_WEP104 = "WIFI_CIPHER_TYPE_WEP104"
@@ -67,3 +68,14 @@ class WifiAuthMode(Enum):
         WIFI_CIPHER_TYPE_AES_GMAC128 = "WIFI_CIPHER_TYPE_AES_GMAC128"
         WIFI_CIPHER_TYPE_AES_GMAC256 = "WIFI_CIPHER_TYPE_AES_GMAC256"
         WIFI_CIPHER_TYPE_UNKNOWN = "WIFI_CIPHER_TYPE_UNKNOWN"
+
+# Wi-Fi antenna
+class Ant(Enum):
+    # Wi-Fi antenna 0 
+    WIFI_ANT_ANT0 = "WIFI_ANT_ANT0"
+    # Wi-Fi antenna 1 
+    WIFI_ANT_ANT1 = "WIFI_ANT_ANT1"
+    # Invalid Wi-Fi antenna 
+    WIFI_ANT_MAX = "WIFI_ANT_MAX"
+
+
