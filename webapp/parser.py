@@ -179,5 +179,39 @@ class WifiCountryPolicy(Enum):
     # Country policy is manual, always use the configured country info 
     WIFI_COUNTRY_POLICY_MANUAL = "WIFI_COUNTRY_POLICY_MANUAL"
 
+class WifiAPRecord():
+    def __init__(self, date, time, latitude, longitude, altitude, speed, bssid):
+        # Required fields
+        self._date = date
+        self._time = time
+        self._latitude = latitude
+        self._longitude = longitude
+        self._altitude = altitude
+        self._speed = speed
+        self._bssid = bssid
+        # Optional fields
+        self._ssid = ""
+        self._primary_channel = ""
+        self._second_channel = ""
+        self._rssi = ""
+        self._authmode = ""
+        self._pairwise_cipher = ""
+        self._group_cipher = ""
+        self._ant = ""
+        self._country_code = ""
+        self._country_start_channel = ""
+        self._country_end_channel = ""
+        self._max_tx_power = ""
+        self._country_policy = ""
+        self._wifi_AP_HE = ""
+        self._bss_color = ""
+        self._partial_bss_color = ""
+        self._bss_color_disabled = ""
+        self._bssid_index = ""
+        self._bandwidth = ""
+        self._vht_ch_freq1 = ""
+        self._vht_ch_freq2 = ""
+        self._flags = ""
+
 
 
