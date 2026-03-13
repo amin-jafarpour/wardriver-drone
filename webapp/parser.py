@@ -172,3 +172,12 @@ country_code_mapping = {
     WiFiCountryCode.US: "United States",
     WiFiCountryCode._01: "World Safe Mode"
 }
+
+class WifiCountryPolicy(Enum):
+    # Country policy is auto, use the country info of AP to which the station is connected 
+    WIFI_COUNTRY_POLICY_AUTO = "WIFI_COUNTRY_POLICY_AUTO"
+    # Country policy is manual, always use the configured country info 
+    WIFI_COUNTRY_POLICY_MANUAL = "WIFI_COUNTRY_POLICY_MANUAL"
+
+
+
