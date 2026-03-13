@@ -1,8 +1,10 @@
 from enum import Enum
+from datetime import datetime
+
 
 # https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/network/esp_wifi.html#_CPPv416wifi_ap_record_t
 
-class WifiSecondChan(Enum):
+class WifiSecondChan(Enum): 
     # The channel width is HT20 
     WIFI_SECOND_CHAN_NONE = "WIFI_SECOND_CHAN_NONE"
     # The channel width is HT40 and the secondary channel is above the primary channel 
@@ -179,19 +181,43 @@ class WifiCountryPolicy(Enum):
     # Country policy is manual, always use the configured country info 
     WIFI_COUNTRY_POLICY_MANUAL = "WIFI_COUNTRY_POLICY_MANUAL"
 
+"""
+date, time, latitude, longitude, altitude, speed, bssid,
+ssid,
+primary-channel,
+second-channel,
+rssi,authmode,
+pairwise-cipher,
+group-cipher,
+ant,
+Country-code,
+country-start-channel,
+country-end-channel,
+max-tx-power,
+country-policy,
+wifi-AP-HE,
+bss-color,
+partial-bss-color,
+bss-color-disabled,
+bssid-index,
+bandwidth,
+vht_ch_freq1,
+vht_ch_freq2,
+flags
+"""
 class WifiAPRecord():
     def __init__(self, date, time, latitude, longitude, altitude, speed, bssid):
         # Required fields
-        self._date = date
-        self._time = time
-        self._latitude = latitude
-        self._longitude = longitude
-        self._altitude = altitude
-        self._speed = speed
+        self._date = datetime.strptime(date, "%Y/%m/%d")
+        self._time = datetime.strptime(time, "%H:%M:%S").time()
+        self._latitude = float(latitude)
+        self._longitude = float(longitude)
+        self._altitude = float(altitude)
+        self._speed = float(speed)
         self._bssid = bssid
         # Optional fields
         self._ssid = ""
-        self._primary_channel = ""
+        self._primary_channel = 0
         self._second_channel = ""
         self._rssi = ""
         self._authmode = ""
@@ -212,6 +238,3 @@ class WifiAPRecord():
         self._vht_ch_freq1 = ""
         self._vht_ch_freq2 = ""
         self._flags = ""
-
-
-
