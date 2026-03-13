@@ -193,6 +193,24 @@ class WifiCountryPolicy(Enum):
     # Placeholder for the default option and unexpected value
     WIFI_COUNTRY_POLICY_ERROR = "WIFI_COUNTRY_POLICY_ERROR"
 
+class WifiBandwidth(Enum): 
+    # Bandwidth is HT20 
+    WIFI_BW_HT20 = "WIFI_BW_HT20"
+    # Bandwidth is 20 MHz 
+    WIFI_BW20 = "WIFI_BW20"
+    # Bandwidth is HT40 
+    WIFI_BW_HT40 = "WIFI_BW_HT40"
+    # Bandwidth is 40 MHz 
+    WIFI_BW40 = "WIFI_BW40"
+    # Bandwidth is 80 MHz 
+    WIFI_BW80 = "WIFI_BW80"
+    # Bandwidth is 160 MHz 
+    WIFI_BW160 = "WIFI_BW160"
+    # Bandwidth is 80 + 80 MHz 
+    WIFI_BW80_BW80 = "WIFI_BW80_BW80"
+    # Placeholder for the default option and unexpected value    
+    WIFI_BW_ERROR = "WIFI_BW_ERROR"
+
 """
 date, time, latitude, longitude, altitude, speed, bssid,
 ssid,
@@ -230,23 +248,23 @@ class WifiAPRecord():
         # Optional fields
         self._ssid = ""
         self._primary_channel = 0
-        self._second_channel = ""
-        self._rssi = ""
-        self._authmode = ""
-        self._pairwise_cipher = ""
-        self._group_cipher = ""
-        self._ant = ""
+        self._second_channel = WifiSecondChan.WIFI_SECOND_CHAN_ERROR
+        self._rssi = 0
+        self._authmode = WifiAuthMode.UNKNOWN_AUTH_ERROR
+        self._pairwise_cipher = PairwiseCipherType.WIFI_CIPHER_TYPE_ERROR
+        self._group_cipher = GroupCipherType.WIFI_CIPHER_TYPE_ERROR
+        self._ant = Ant.WIFI_ANT_ERROR
         self._country_code = ""
-        self._country_start_channel = ""
-        self._country_end_channel = ""
-        self._max_tx_power = ""
-        self._country_policy = ""
-        self._wifi_AP_HE = ""
-        self._bss_color = ""
-        self._partial_bss_color = ""
-        self._bss_color_disabled = ""
+        self._country_start_channel = 0
+        self._country_end_channel = 0
+        self._max_tx_power = 0
+        self._country_policy = WifiCountryPolicy.WIFI_COUNTRY_POLICY_ERROR
+        self._wifi_AP_HE = 0
+        self._bss_color = 0
+        self._partial_bss_color = 0
+        self._bss_color_disabled = 0
         self._bssid_index = ""
-        self._bandwidth = ""
+        self._bandwidth = WifiBandwidth.WIFI_BW_ERROR
         self._vht_ch_freq1 = ""
         self._vht_ch_freq2 = ""
         self._flags = ""
