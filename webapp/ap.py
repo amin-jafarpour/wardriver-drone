@@ -265,6 +265,6 @@ class WifiAPRecord():
         self._bss_color_disabled = 0
         self._bssid_index = ""
         self._bandwidth = WifiBandwidth.WIFI_BW_ERROR
-        self._vht_ch_freq1 = ""
-        self._vht_ch_freq2 = ""
-        self._flags = ""
+        self._vht_ch_freq1 = 0
+        self._vht_ch_freq2 = 0
+        self._flags = 0
