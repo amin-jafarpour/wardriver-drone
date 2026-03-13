@@ -39,35 +39,35 @@ class WifiAuthMode(Enum):
     # Invalid authmode
     WIFI_AUTH_MAX = "WIFI_AUTH_MAX" 
 
-    class PairwiseCipherType(Enum):
-        WIFI_CIPHER_TYPE_NONE = "WIFI_CIPHER_TYPE_NONE"
-        WIFI_CIPHER_TYPE_WEP40 = "WIFI_CIPHER_TYPE_WEP40"
-        WIFI_CIPHER_TYPE_WEP104 = "WIFI_CIPHER_TYPE_WEP104"
-        WIFI_CIPHER_TYPE_TKIP = "WIFI_CIPHER_TYPE_TKIP"
-        WIFI_CIPHER_TYPE_CCMP = "WIFI_CIPHER_TYPE_CCMP"
-        WIFI_CIPHER_TYPE_TKIP_CCMP = "WIFI_CIPHER_TYPE_TKIP_CCMP"
-        WIFI_CIPHER_TYPE_AES_CMAC128 = "WIFI_CIPHER_TYPE_AES_CMAC128"
-        WIFI_CIPHER_TYPE_SMS4 = "WIFI_CIPHER_TYPE_SMS4"
-        WIFI_CIPHER_TYPE_GCMP = "WIFI_CIPHER_TYPE_GCMP"
-        WIFI_CIPHER_TYPE_GCMP256 = "WIFI_CIPHER_TYPE_GCMP256"
-        WIFI_CIPHER_TYPE_AES_GMAC128 = "WIFI_CIPHER_TYPE_AES_GMAC128"
-        WIFI_CIPHER_TYPE_AES_GMAC256 = "WIFI_CIPHER_TYPE_AES_GMAC256"
-        WIFI_CIPHER_TYPE_UNKNOWN = "WIFI_CIPHER_TYPE_UNKNOWN"
+class PairwiseCipherType(Enum):
+    WIFI_CIPHER_TYPE_NONE = "WIFI_CIPHER_TYPE_NONE"
+    WIFI_CIPHER_TYPE_WEP40 = "WIFI_CIPHER_TYPE_WEP40"
+    WIFI_CIPHER_TYPE_WEP104 = "WIFI_CIPHER_TYPE_WEP104"
+    WIFI_CIPHER_TYPE_TKIP = "WIFI_CIPHER_TYPE_TKIP"
+    WIFI_CIPHER_TYPE_CCMP = "WIFI_CIPHER_TYPE_CCMP"
+    WIFI_CIPHER_TYPE_TKIP_CCMP = "WIFI_CIPHER_TYPE_TKIP_CCMP"
+    WIFI_CIPHER_TYPE_AES_CMAC128 = "WIFI_CIPHER_TYPE_AES_CMAC128"
+    WIFI_CIPHER_TYPE_SMS4 = "WIFI_CIPHER_TYPE_SMS4"
+    WIFI_CIPHER_TYPE_GCMP = "WIFI_CIPHER_TYPE_GCMP"
+    WIFI_CIPHER_TYPE_GCMP256 = "WIFI_CIPHER_TYPE_GCMP256"
+    WIFI_CIPHER_TYPE_AES_GMAC128 = "WIFI_CIPHER_TYPE_AES_GMAC128"
+    WIFI_CIPHER_TYPE_AES_GMAC256 = "WIFI_CIPHER_TYPE_AES_GMAC256"
+    WIFI_CIPHER_TYPE_UNKNOWN = "WIFI_CIPHER_TYPE_UNKNOWN"
 
-    class GroupCipherType(Enum):
-        WIFI_CIPHER_TYPE_NONE = "WIFI_CIPHER_TYPE_NONE"
-        WIFI_CIPHER_TYPE_WEP40 = "WIFI_CIPHER_TYPE_WEP40"
-        WIFI_CIPHER_TYPE_WEP104 = "WIFI_CIPHER_TYPE_WEP104"
-        WIFI_CIPHER_TYPE_TKIP = "WIFI_CIPHER_TYPE_TKIP"
-        WIFI_CIPHER_TYPE_CCMP = "WIFI_CIPHER_TYPE_CCMP"
-        WIFI_CIPHER_TYPE_TKIP_CCMP = "WIFI_CIPHER_TYPE_TKIP_CCMP"
-        WIFI_CIPHER_TYPE_AES_CMAC128 = "WIFI_CIPHER_TYPE_AES_CMAC128"
-        WIFI_CIPHER_TYPE_SMS4 = "WIFI_CIPHER_TYPE_SMS4"
-        WIFI_CIPHER_TYPE_GCMP = "WIFI_CIPHER_TYPE_GCMP"
-        WIFI_CIPHER_TYPE_GCMP256 = "WIFI_CIPHER_TYPE_GCMP256"
-        WIFI_CIPHER_TYPE_AES_GMAC128 = "WIFI_CIPHER_TYPE_AES_GMAC128"
-        WIFI_CIPHER_TYPE_AES_GMAC256 = "WIFI_CIPHER_TYPE_AES_GMAC256"
-        WIFI_CIPHER_TYPE_UNKNOWN = "WIFI_CIPHER_TYPE_UNKNOWN"
+class GroupCipherType(Enum):
+    WIFI_CIPHER_TYPE_NONE = "WIFI_CIPHER_TYPE_NONE"
+    WIFI_CIPHER_TYPE_WEP40 = "WIFI_CIPHER_TYPE_WEP40"
+    WIFI_CIPHER_TYPE_WEP104 = "WIFI_CIPHER_TYPE_WEP104"
+    WIFI_CIPHER_TYPE_TKIP = "WIFI_CIPHER_TYPE_TKIP"
+    WIFI_CIPHER_TYPE_CCMP = "WIFI_CIPHER_TYPE_CCMP"
+    WIFI_CIPHER_TYPE_TKIP_CCMP = "WIFI_CIPHER_TYPE_TKIP_CCMP"
+    WIFI_CIPHER_TYPE_AES_CMAC128 = "WIFI_CIPHER_TYPE_AES_CMAC128"
+    WIFI_CIPHER_TYPE_SMS4 = "WIFI_CIPHER_TYPE_SMS4"
+    WIFI_CIPHER_TYPE_GCMP = "WIFI_CIPHER_TYPE_GCMP"
+    WIFI_CIPHER_TYPE_GCMP256 = "WIFI_CIPHER_TYPE_GCMP256"
+    WIFI_CIPHER_TYPE_AES_GMAC128 = "WIFI_CIPHER_TYPE_AES_GMAC128"
+    WIFI_CIPHER_TYPE_AES_GMAC256 = "WIFI_CIPHER_TYPE_AES_GMAC256"
+    WIFI_CIPHER_TYPE_UNKNOWN = "WIFI_CIPHER_TYPE_UNKNOWN"
 
 # Wi-Fi antenna
 class Ant(Enum):
@@ -125,49 +125,50 @@ class WiFiCountryCode(Enum):
     US = "US"
     _01 = "01"
 
-
-    AT = "Austria"
-    AU = "Australia"
-    BE = "Belgium"
-    BG = "Bulgaria"
-    BR = "Brazil"
-    CA = "Canada"
-    CH = "Switzerland"
-    CN = "China"
-    CY = "Cyprus"
-    CZ = "Czech Republic"
-    DE = "Germany"
-    DK = "Denmark"
-    EE = "Estonia"
-    ES = "Spain"
-    FI = "Finland"
-    FR = "France"
-    GB = "United Kingdom"
-    GR = "Greece"
-    HK = "Hong Kong"
-    HR = "Croatia"
-    HU = "Hungary"
-    IE = "Ireland"
-    IN = "India"
-    IS = "Iceland"
-    IT = "Italy"
-    JP = "Japan"
-    KR = "South Korea"
-    LI = "Liechtenstein"
-    LT = "Lithuania"
-    LU = "Luxembourg"
-    LV = "Latvia"
-    MT = "Malta"
-    MX = "Mexico"
-    NL = "Netherlands"
-    NO = "Norway"
-    NZ = "New Zealand"
-    PL = "Poland"
-    PT = "Portugal"
-    RO = "Romania"
-    SE = "Sweden"
-    SI = "Slovenia"
-    SK = "Slovakia"
-    TW = "Taiwan"
-    US = "United States"
-    _01 = "World Safe Mode"
+country_code_mapping = {
+    WiFiCountryCode.AT: "Austria",
+    WiFiCountryCode.AU: "Australia",
+    WiFiCountryCode.BE: "Belgium",
+    WiFiCountryCode.BG: "Bulgaria",
+    WiFiCountryCode.BR: "Brazil",
+    WiFiCountryCode.CA: "Canada",
+    WiFiCountryCode.CH: "Switzerland",
+    WiFiCountryCode.CN: "China",
+    WiFiCountryCode.CY: "Cyprus",
+    WiFiCountryCode.CZ: "Czech Republic",
+    WiFiCountryCode.DE: "Germany",
+    WiFiCountryCode.DK: "Denmark",
+    WiFiCountryCode.EE: "Estonia",
+    WiFiCountryCode.ES: "Spain",
+    WiFiCountryCode.FI: "Finland",
+    WiFiCountryCode.FR: "France",
+    WiFiCountryCode.GB: "United Kingdom",
+    WiFiCountryCode.GR: "Greece",
+    WiFiCountryCode.HK: "Hong Kong",
+    WiFiCountryCode.HR: "Croatia",
+    WiFiCountryCode.HU: "Hungary",
+    WiFiCountryCode.IE: "Ireland",
+    WiFiCountryCode.IN: "India",
+    WiFiCountryCode.IS: "Iceland",
+    WiFiCountryCode.IT: "Italy",
+    WiFiCountryCode.JP: "Japan",
+    WiFiCountryCode.KR: "South Korea",
+    WiFiCountryCode.LI: "Liechtenstein",
+    WiFiCountryCode.LT: "Lithuania",
+    WiFiCountryCode.LU: "Luxembourg",
+    WiFiCountryCode.LV: "Latvia",
+    WiFiCountryCode.MT: "Malta",
+    WiFiCountryCode.MX: "Mexico",
+    WiFiCountryCode.NL: "Netherlands",
+    WiFiCountryCode.NO: "Norway",
+    WiFiCountryCode.NZ: "New Zealand",
+    WiFiCountryCode.PL: "Poland",
+    WiFiCountryCode.PT: "Portugal",
+    WiFiCountryCode.RO: "Romania",
+    WiFiCountryCode.SE: "Sweden",
+    WiFiCountryCode.SI: "Slovenia",
+    WiFiCountryCode.SK: "Slovakia",
+    WiFiCountryCode.TW: "Taiwan",
+    WiFiCountryCode.US: "United States",
+    WiFiCountryCode._01: "World Safe Mode"
+}
