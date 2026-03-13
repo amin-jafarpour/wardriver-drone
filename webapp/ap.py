@@ -268,3 +268,119 @@ class WifiAPRecord():
         self._vht_ch_freq1 = 0
         self._vht_ch_freq2 = 0
         self._flags = 0
+
+    @property
+    def date():
+       return self._date
+
+    @property
+    def time():
+        return self._time
+
+    @property
+    def latitude():
+        return self._latitude
+
+    @property
+    def longitude():
+        return self._longitude
+
+    @property 
+    def altitude():
+        return self._altitude
+
+    @property
+    def speed():
+        self._speed
+
+    @property
+    def bssid():
+        return self._bssid
+
+    @property
+    def ssid():
+        return self._ssid
+
+    @property
+    def primary_channel():
+        return self._primary_channel
+
+    @property 
+    def second_channel():
+        return self._second_channel
+
+    @property
+    def rssi():
+        return self._rssi
+
+    @property
+    def authmode():
+        return self._authmode
+
+    @property
+    def pairwise_cipher():
+        return self._pairwise_cipher
+    
+    @property
+    def group_cipher():
+        return self._group_cipher
+
+    @property
+    def ant():
+        return self._ant
+    
+    @property
+    def country_code():
+        return self._country_code
+
+    @property
+    def country_start_channel():
+        return self._country_start_channel
+
+    @property
+    def country_end_channel():
+        return self._country_end_channel
+
+    @property
+    def max_tx_power():
+        return self._max_tx_power
+
+    @property
+    def country_policy():
+        return self._country_policy
+
+    @property
+    def wifi_AP_HE():
+        return self._wifi_AP_HE
+
+    @property
+    def bss_color():
+        return self._bss_color
+
+    @property
+    def partial_bss_color():
+        return self._partial_bss_color
+
+    @property
+    def bss_color_disabled():
+        return self._bss_color_disabled
+
+    @property
+    def bssid_index():
+        return self._bssid_index
+
+    @property
+    def bandwidth():
+        return self._bandwidth
+
+    @property
+    def vht_ch_freq1():
+        return self._vht_ch_freq1
+    
+    @property
+    def vht_ch_freq2():
+        return self._vht_ch_freq2
+    
+    @property
+    def flags():
+        return self._flags
