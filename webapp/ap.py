@@ -11,6 +11,8 @@ class WifiSecondChan(Enum):
     WIFI_SECOND_CHAN_ABOVE = "WIFI_SECOND_CHAN_ABOVE"
     # The channel width is HT40 and the secondary channel is below the primary channel
     WIFI_SECOND_CHAN_BELOW = "WIFI_SECOND_CHAN_BELOW"
+    # Placeholder for the default option and unexpected values
+    WIFI_SECOND_CHAN_ERROR = "WIFI_SECOND_CHAN_ERROR"
 
 class WifiAuthMode(Enum):
     # Personal Networks: OPEN < WEP < WPA_PSK < OWE < WPA2_PSK = WPA_WPA2_PSK < WAPI_PSK < WPA3_PSK = WPA2_WPA3_PSK.
@@ -40,6 +42,8 @@ class WifiAuthMode(Enum):
     WIFI_AUTH_WPA_ENTERPRISE = "WIFI_AUTH_WPA_ENTERPRISE"
     # Invalid authmode
     WIFI_AUTH_MAX = "WIFI_AUTH_MAX" 
+    # Placeholder for the default option and unexpected values
+    UNKNOWN_AUTH_ERROR = "UNKNOWN_AUTH_ERROR"
 
 class PairwiseCipherType(Enum):
     WIFI_CIPHER_TYPE_NONE = "WIFI_CIPHER_TYPE_NONE"
@@ -55,6 +59,8 @@ class PairwiseCipherType(Enum):
     WIFI_CIPHER_TYPE_AES_GMAC128 = "WIFI_CIPHER_TYPE_AES_GMAC128"
     WIFI_CIPHER_TYPE_AES_GMAC256 = "WIFI_CIPHER_TYPE_AES_GMAC256"
     WIFI_CIPHER_TYPE_UNKNOWN = "WIFI_CIPHER_TYPE_UNKNOWN"
+    # Placeholder for the default option and unexpected values
+    WIFI_CIPHER_TYPE_ERROR = "WIFI_CIPHER_TYPE_ERROR"
 
 class GroupCipherType(Enum):
     WIFI_CIPHER_TYPE_NONE = "WIFI_CIPHER_TYPE_NONE"
@@ -70,6 +76,8 @@ class GroupCipherType(Enum):
     WIFI_CIPHER_TYPE_AES_GMAC128 = "WIFI_CIPHER_TYPE_AES_GMAC128"
     WIFI_CIPHER_TYPE_AES_GMAC256 = "WIFI_CIPHER_TYPE_AES_GMAC256"
     WIFI_CIPHER_TYPE_UNKNOWN = "WIFI_CIPHER_TYPE_UNKNOWN"
+    # Placeholder for the default option and unexpected values
+    WIFI_CIPHER_TYPE_ERROR = "WIFI_CIPHER_TYPE_ERROR"
 
 # Wi-Fi antenna
 class Ant(Enum):
@@ -79,6 +87,8 @@ class Ant(Enum):
     WIFI_ANT_ANT1 = "WIFI_ANT_ANT1"
     # Invalid Wi-Fi antenna 
     WIFI_ANT_MAX = "WIFI_ANT_MAX"
+    # Placeholder for the default option and unexpected values
+    WIFI_ANT_ERROR = "WIFI_ANT_ERROR"
 
 class WiFiCountryCode(Enum):
     AT = "AT"
@@ -180,6 +190,8 @@ class WifiCountryPolicy(Enum):
     WIFI_COUNTRY_POLICY_AUTO = "WIFI_COUNTRY_POLICY_AUTO"
     # Country policy is manual, always use the configured country info 
     WIFI_COUNTRY_POLICY_MANUAL = "WIFI_COUNTRY_POLICY_MANUAL"
+    # Placeholder for the default option and unexpected value
+    WIFI_COUNTRY_POLICY_ERROR = "WIFI_COUNTRY_POLICY_ERROR"
 
 """
 date, time, latitude, longitude, altitude, speed, bssid,
