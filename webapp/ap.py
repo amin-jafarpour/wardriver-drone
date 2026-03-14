@@ -271,6 +271,7 @@ class WifiAPRecord():
         self._vht_ch_freq2 = 0
         # self._flags = 0
 
+    # getters
     @property
     def date(self):
        return self._date
@@ -387,29 +388,30 @@ class WifiAPRecord():
     # def flags(self):
     #     return self._flags
 
+    # setters
     @date.setter
     def date(self, val):
-        self._date = val
+        self._date = datetime.strptime(val)
 
     @time.setter
     def time(self, val):
-        self._time = val
+        self._time = datetime.strptime(val, "%H:%M:%S").time()
 
     @latitude.setter
     def latitude(self, val):
-        self._latitude = val
+        self._latitude = float(val)
 
     @longitude.setter
     def longitude(self, val):
-        self._longitude = val
+        self._longitude = float(val)
 
     @altitude.setter 
     def altitude(self, val):
-        self._altitude = val
+        self._altitude = float(val)
 
     @speed.setter
     def speed(self, val):
-        self._speed = val
+        self._speed = float(val)
 
     @bssid.setter
     def bssid(self, val):
@@ -421,7 +423,7 @@ class WifiAPRecord():
 
     @primary_channel.setter
     def primary_channel(self, val):
-        self._primary_channel = val
+        self._primary_channel = int(val)
 
     @second_channel.setter 
     def second_channel(self, val):
@@ -513,4 +515,6 @@ class WifiAPRecord():
     def FIELD_COUNT(self):
         return self._FIELD_COUNT
 
+
+class WifiAPRecordCollection:
     
