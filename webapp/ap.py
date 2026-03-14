@@ -513,9 +513,4 @@ class WifiAPRecord():
     def FIELD_COUNT(self):
         return self._FIELD_COUNT
 
-
-class WifiAPRecordCollection():
-    def __init__(self, wifi_ap_record_list):
-        self._wifi_ap_record_list = wifi_ap_record_list
-
     
