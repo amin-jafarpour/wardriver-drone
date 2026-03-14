@@ -70,34 +70,17 @@ def mapping():
 
         first_record = filterd_records[0]
         map = folium.Map(location=[first_record.latitude, first_record.longitude], zoom_start=12, control_scale=True)
-        for idx, record in enumerate(filterd_records):
-            if idx < len(filterd_records) - 1:
-                next_record = filterd_records[idx + 1]
-                # poly = folium.PolyLine(
-                #     locations=[(record.latitude, record.longitude), (next_record.latitude, next_record.longitude)],
-                #     color="blue",
-                #     weight=3,
-                #     opacity=0.8,
-                # )
-                # popup = folium.Popup("<h1>hi</h1>", max_width=300, parse_html=True)
+        for record in filterd_records:
                 poly = folium.CircleMarker(
+
                     location=(record.latitude, record.longitude),
                     radius=5,
                     color="red",
                     fill=True,
                     fill_opacity=0.9,
-                    popup = folium.Popup("<h1>hi</h1>", max_width=300, parse_html=True)
-                    # popup=folium.Popup("popup_text", max_width=300)
+                    popup = folium.Popup(record.to_html(), max_width=300, parse_html=True)
                 )
-                #poly.add_child(popup)
                 poly.add_to(map)
-            else:
-                folium.Marker(
-                    location=[record.latitude, record.longitude],
-                    icon=folium.Icon(color="red", icon="info-sign"),
-                    popup=folium.Popup("<h1>hi</h1>", max_width=300, parse_html=True),
-                ).add_to(map)
-
         st_data = st_folium(map, width=900, height=600)
 
 

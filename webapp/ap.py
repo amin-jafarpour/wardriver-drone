@@ -554,6 +554,42 @@ class WifiAPRecord():
     def __hash__(self):
         return hash(str(self))
 
+    def to_html(self):
+        snippet = f"""
+        date: {str(self._date) }
+        time: {str(self._time)}
+        latitude: {str(self._latitude)}
+        longitude: {str(self._longitude)} 
+        altitude: {str(self._altitude)} 
+        speed: {str(self._speed)}
+        bssid: {str(self._bssid)}
+        ssid: {str(self._ssid)}
+        primary_channel: {str(self._primary_channel)}
+        second_channel: {str(self._second_channel)}
+        rssi: {str(self._rssi)} 
+        authmode: {str(self._authmode)} 
+        pairwise_cipher: {str(self._pairwise_cipher)} 
+        group_cipher: {str(self._group_cipher)} 
+        ant: {str(self._ant)} 
+        country_code: {str(self._country_code)} 
+        country_start_channel: {str(self._country_start_channel)} 
+        country_end_channel: {str(self._country_end_channel)} 
+        max_tx_power: {str(self._max_tx_power)} 
+        country_policy: {str(self._country_policy)} 
+        wifi_AP_HE: {str(self._wifi_AP_HE)}
+        bss_color: {str(self._bss_color)} 
+        partial_bss_color: {str(self._partial_bss_color)} 
+        bss_color_disabled: {str(self._bss_color_disabled)}
+        bssid_index: {str(self._bssid_index)}
+        bandwidth: {str(self._bandwidth)}
+        vht_ch_freq1: {str(self._vht_ch_freq1)}
+        vht_ch_freq2: {str(self._vht_ch_freq2)}
+        """
+        return snippet
+                    
+     
+
+
 class WifiAPRecordCollection:
     def __init__(self, wifi_ap_records):
         self._wifi_ap_records = wifi_ap_records
@@ -563,6 +599,9 @@ class WifiAPRecordCollection:
 
     def filter_duplicates(self):
         self._wifi_ap_records = list(set(self._wifi_ap_records))
+
+    def speard_out(self):
+        pass
 
     @property
     def wifi_ap_records(self):
