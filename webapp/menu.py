@@ -1,5 +1,6 @@
 import streamlit as st
 import sdcard
+import ap
 
 def selection():
     st.title('SD Card Selection')
@@ -21,6 +22,8 @@ def selection():
     if 'file' in st.session_state:
         with open(st.session_state.file, 'r') as file:
             content = file.read()
+            ap_list = ap.WifiAPRecord.readCSV(content)
+            print(ap_list)
             st.subheader('File Content')
             st.text(content)
 

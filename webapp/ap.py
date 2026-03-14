@@ -1,6 +1,7 @@
 from enum import Enum
 from datetime import datetime
-
+import csv
+import io
 
 # https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/network/esp_wifi.html#_CPPv416wifi_ap_record_t
 
@@ -500,3 +501,9 @@ class WifiAPRecord():
     @flags.setter
     def flags(self, val):
         self._flags = val
+
+    @staticmethod
+    def readCSV(content):
+        file = io.StringIO(content)
+        reader = csv.reader(file)
+        return [row for row in reader]
