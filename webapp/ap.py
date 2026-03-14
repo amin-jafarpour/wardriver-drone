@@ -563,3 +563,7 @@ class WifiAPRecordCollection:
 
     def filter_duplicates(self):
         self._wifi_ap_records = list(set(self._wifi_ap_records))
+
+    @property
+    def wifi_ap_records(self):
+        return self._wifi_ap_records

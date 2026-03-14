@@ -63,11 +63,16 @@ def extraction():
 
 def mapping():
     if 'record_list' in st.session_state:
-        first_record = st.session_state.record_list[0]
+        collection = ap.WifiAPRecordCollection(st.session_state.record_list)
+        collection.filter_invalid_gps_coords()
+        collection.filter_duplicates()
+        filterd_records = collection.wifi_ap_records
+
+        first_record = filterd_records[0]
         map = folium.Map(location=[first_record.latitude, first_record.longitude], zoom_start=12, control_scale=True)
-        for idx, record in enumerate(st.session_state.record_list):
-            if idx < len(st.session_state.record_list) - 1:
-                next_record = st.session_state.record_list[idx + 1]
+        for idx, record in enumerate(filterd_records):
+            if idx < len(filterd_records) - 1:
+                next_record = filterd_records[idx + 1]
                 # poly = folium.PolyLine(
                 #     locations=[(record.latitude, record.longitude), (next_record.latitude, next_record.longitude)],
                 #     color="blue",
