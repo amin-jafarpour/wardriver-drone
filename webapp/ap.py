@@ -515,6 +515,51 @@ class WifiAPRecord():
     def FIELD_COUNT(self):
         return self._FIELD_COUNT
 
+    def __str__(self):
+        str_form = ""
+        str_form+= str(self._date) 
+        str_form+= str(self._time)
+        str_form+= str(self._latitude)
+        str_form+= str(self._longitude) 
+        str_form+= str(self._altitude) 
+        str_form+= str(self._speed) 
+        str_form+= str(self._bssid)
+        # Optional fields
+        str_form+= str(self._ssid)
+        str_form+= str(self._primary_channel)
+        str_form+= str(self._second_channel)
+        str_form+= str(self._rssi) 
+        str_form+= str(self._authmode) 
+        str_form+= str(self._pairwise_cipher) 
+        str_form+= str(self._group_cipher) 
+        str_form+= str(self._ant) 
+        str_form+= str(self._country_code) 
+        str_form+= str(self._country_start_channel) 
+        str_form+= str(self._country_end_channel) 
+        str_form+= str(self._max_tx_power) 
+        str_form+= str(self._country_policy) 
+        str_form+= str(self._wifi_AP_HE)
+        str_form+= str(self._bss_color) 
+        str_form+= str(self._partial_bss_color) 
+        str_form+= str(self._bss_color_disabled) 
+        str_form+= str(self._bssid_index)
+        str_form+= str(self._bandwidth) 
+        str_form+= str(self._vht_ch_freq1)
+        str_form+= str(self._vht_ch_freq2)
+        return str_form
+
+    def __eq__(self, other):
+        return isinstance(other, WifiAPRecord) and str(self) == str(other)
+
+    def __hash__(self):
+        return hash(str(self))
 
 class WifiAPRecordCollection:
-    
+    def __init__(self, wifi_ap_records):
+        self._wifi_ap_records = wifi_ap_records
+
+    def filter_invalid_gps_coords(self):
+        self._wifi_ap_records = [ap for ap in self._wifi_ap_records if ap.latitude != 0.0 and ap.longitude != 0.0]
+
+    def filter_duplicates(self):
+        self._wifi_ap_records = list(set(self._wifi_ap_records))
