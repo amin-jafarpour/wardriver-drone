@@ -66,22 +66,31 @@ def mapping():
         first_record = st.session_state.record_list[0]
         map = folium.Map(location=[first_record.latitude, first_record.longitude], zoom_start=12, control_scale=True)
         for idx, record in enumerate(st.session_state.record_list):
-            popup = folium.Popup("<h1>hi</h1>", max_width=300, parse_html=True)
             if idx < len(st.session_state.record_list) - 1:
                 next_record = st.session_state.record_list[idx + 1]
-                poly = folium.PolyLine(
-                    locations=[(record.latitude, record.longitude), (next_record.latitude, next_record.longitude)],
-                    color="blue",
-                    weight=3,
-                    opacity=0.8,
+                # poly = folium.PolyLine(
+                #     locations=[(record.latitude, record.longitude), (next_record.latitude, next_record.longitude)],
+                #     color="blue",
+                #     weight=3,
+                #     opacity=0.8,
+                # )
+                # popup = folium.Popup("<h1>hi</h1>", max_width=300, parse_html=True)
+                poly = folium.CircleMarker(
+                    location=(record.latitude, record.longitude),
+                    radius=5,
+                    color="red",
+                    fill=True,
+                    fill_opacity=0.9,
+                    popup = folium.Popup("<h1>hi</h1>", max_width=300, parse_html=True)
+                    # popup=folium.Popup("popup_text", max_width=300)
                 )
-                poly.add_child(popup)
+                #poly.add_child(popup)
                 poly.add_to(map)
             else:
                 folium.Marker(
                     location=[record.latitude, record.longitude],
                     icon=folium.Icon(color="red", icon="info-sign"),
-                    popup=popup,
+                    popup=folium.Popup("<h1>hi</h1>", max_width=300, parse_html=True),
                 ).add_to(map)
 
         st_data = st_folium(map, width=900, height=600)
