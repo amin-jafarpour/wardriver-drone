@@ -559,26 +559,26 @@ class WifiAPRecord():
         date: {str(self._date) }
         time: {str(self._time)}
         latitude: {str(self._latitude)}
-        longitude: {str(self._longitude)} 
-        altitude: {str(self._altitude)} 
+        longitude: {str(self._longitude)}
+        altitude: {str(self._altitude)}
         speed: {str(self._speed)}
         bssid: {str(self._bssid)}
         ssid: {str(self._ssid)}
         primary_channel: {str(self._primary_channel)}
         second_channel: {str(self._second_channel)}
-        rssi: {str(self._rssi)} 
-        authmode: {str(self._authmode)} 
-        pairwise_cipher: {str(self._pairwise_cipher)} 
-        group_cipher: {str(self._group_cipher)} 
-        ant: {str(self._ant)} 
+        rssi: {str(self._rssi)}
+        authmode: {str(self._authmode)}
+        pairwise_cipher: {str(self._pairwise_cipher)}
+        group_cipher: {str(self._group_cipher)}
+        ant: {str(self._ant)}
         country_code: {str(self._country_code)} 
         country_start_channel: {str(self._country_start_channel)} 
-        country_end_channel: {str(self._country_end_channel)} 
-        max_tx_power: {str(self._max_tx_power)} 
-        country_policy: {str(self._country_policy)} 
+        country_end_channel: {str(self._country_end_channel)}
+        max_tx_power: {str(self._max_tx_power)}
+        country_policy: {str(self._country_policy)}
         wifi_AP_HE: {str(self._wifi_AP_HE)}
-        bss_color: {str(self._bss_color)} 
-        partial_bss_color: {str(self._partial_bss_color)} 
+        bss_color: {str(self._bss_color)}
+        partial_bss_color: {str(self._partial_bss_color)}
         bss_color_disabled: {str(self._bss_color_disabled)}
         bssid_index: {str(self._bssid_index)}
         bandwidth: {str(self._bandwidth)}

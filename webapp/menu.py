@@ -78,7 +78,8 @@ def mapping():
                     color="red",
                     fill=True,
                     fill_opacity=0.9,
-                    popup = folium.Popup(record.to_html(), max_width=300, parse_html=True)
+                    #popup = folium.Popup(record.to_html(), max_width=300, parse_html=True)
+                    popup = folium.Popup(record.to_html())
                 )
                 poly.add_to(map)
         st_data = st_folium(map, width=900, height=600)
