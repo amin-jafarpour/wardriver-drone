@@ -270,117 +270,233 @@ class WifiAPRecord():
         self._flags = 0
 
     @property
-    def date():
+    def date(self):
        return self._date
 
     @property
-    def time():
+    def time(self):
         return self._time
 
     @property
-    def latitude():
+    def latitude(self):
         return self._latitude
 
     @property
-    def longitude():
+    def longitude(self):
         return self._longitude
 
     @property 
-    def altitude():
+    def altitude(self):
         return self._altitude
 
     @property
-    def speed():
+    def speed(self):
         self._speed
 
     @property
-    def bssid():
+    def bssid(self):
         return self._bssid
 
     @property
-    def ssid():
+    def ssid(self):
         return self._ssid
 
     @property
-    def primary_channel():
+    def primary_channel(self):
         return self._primary_channel
 
     @property 
-    def second_channel():
+    def second_channel(self):
         return self._second_channel
 
     @property
-    def rssi():
+    def rssi(self):
         return self._rssi
 
     @property
-    def authmode():
+    def authmode(self):
         return self._authmode
 
     @property
-    def pairwise_cipher():
+    def pairwise_cipher(self):
         return self._pairwise_cipher
     
     @property
-    def group_cipher():
+    def group_cipher(self):
         return self._group_cipher
 
     @property
-    def ant():
+    def ant(self):
         return self._ant
     
     @property
-    def country_code():
+    def country_code(self):
         return self._country_code
 
     @property
-    def country_start_channel():
+    def country_start_channel(self):
         return self._country_start_channel
 
     @property
-    def country_end_channel():
+    def country_end_channel(self):
         return self._country_end_channel
 
     @property
-    def max_tx_power():
+    def max_tx_power(self):
         return self._max_tx_power
 
     @property
-    def country_policy():
+    def country_policy(self):
         return self._country_policy
 
     @property
-    def wifi_AP_HE():
+    def wifi_AP_HE(self):
         return self._wifi_AP_HE
 
     @property
-    def bss_color():
+    def bss_color(self):
         return self._bss_color
 
     @property
-    def partial_bss_color():
+    def partial_bss_color(self):
         return self._partial_bss_color
 
     @property
-    def bss_color_disabled():
+    def bss_color_disabled(self):
         return self._bss_color_disabled
 
     @property
-    def bssid_index():
+    def bssid_index(self):
         return self._bssid_index
 
     @property
-    def bandwidth():
+    def bandwidth(self):
         return self._bandwidth
 
     @property
-    def vht_ch_freq1():
+    def vht_ch_freq1(self):
         return self._vht_ch_freq1
     
     @property
-    def vht_ch_freq2():
+    def vht_ch_freq2(self):
         return self._vht_ch_freq2
     
     @property
-    def flags():
+    def flags(self):
         return self._flags
+
+    @date.setter
+    def date(self, val):
+        self._date = val
+
+    @time.setter
+    def time(self, val):
+        self._time = val
+
+    @latitude.setter
+    def latitude(self, val):
+        self._latitude = val
+
+    @longitude.setter
+    def longitude(self, val):
+        self._longitude = val
+
+    @altitude.setter 
+    def altitude(self, val):
+        self._altitude = val
+
+    @speed.setter
+    def speed(self, val):
+        self._speed = val
+
+    @bssid.setter
+    def bssid(self, val):
+        self._bssid = val 
+
+    @ssid.setter
+    def ssid():
+        self._ssid = val
+
+    @primary_channel.setter
+    def primary_channel(self, val):
+        self._primary_channel = val
+
+    @second_channel.setter 
+    def second_channel(self, val):
+        self._second_channel = val
+
+    @rssi.setter
+    def rssi(self, val):
+        self._rssi = val
+
+    @authmode.setter
+    def authmode(self, val):
+        self._authmode = val
+
+    @pairwise_cipher.setter
+    def pairwise_cipher(self, val):
+        self._pairwise_cipher = val
+    
+    @group_cipher.setter
+    def group_cipher(self, val):
+        self._group_cipher = val
+
+    @ant.setter
+    def ant(self, val):
+        self._ant = val
+    
+    @country_code.setter
+    def country_code(self, val):
+        self._country_code = val
+
+    @country_start_channel.setter
+    def country_start_channel(self, val):
+        self._country_start_channel = val
+
+    @country_end_channel.setter
+    def country_end_channel(self, val):
+        self._country_end_channel = val
+
+    @max_tx_power.setter
+    def max_tx_power(self, val):
+        self._max_tx_power = val
+
+    @country_policy.setter
+    def country_policy(self, val):
+        self._country_policy = val
+
+    @wifi_AP_HE.setter
+    def wifi_AP_HE(self, val):
+        self._wifi_AP_HE = val
+
+    @bss_color.setter
+    def bss_color(self, val):
+        self._bss_color = val
+
+    @partial_bss_color.setter
+    def partial_bss_color(self, val):
+        self._partial_bss_color = val
+
+    @bss_color_disabled.setter
+    def bss_color_disabled(self, val):
+        self._bss_color_disabled = val
+
+    @bssid_index.setter
+    def bssid_index(self, val):
+        self._bssid_index = val
+
+    @bandwidth.setter
+    def bandwidth(self, val):
+        self._bandwidth = val
+
+    @vht_ch_freq1.setter
+    def vht_ch_freq1(self, val):
+        self._vht_ch_freq1 = val
+    
+    @vht_ch_freq2.setter
+    def vht_ch_freq2(self, val):
+        self._vht_ch_freq2 = val
+    
+    @flags.setter
+    def flags(self, val):
+        self._flags = val
