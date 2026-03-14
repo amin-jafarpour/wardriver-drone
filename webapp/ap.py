@@ -237,6 +237,7 @@ vht_ch_freq2,
 flags
 """
 class WifiAPRecord():
+    _FIELD_COUNT = 28
     def __init__(self, date, time, latitude, longitude, altitude, speed, bssid):
         # Required fields
         self._date = datetime.strptime(date, "%Y/%m/%d")
@@ -268,7 +269,7 @@ class WifiAPRecord():
         self._bandwidth = WifiBandwidth.WIFI_BW_ERROR
         self._vht_ch_freq1 = 0
         self._vht_ch_freq2 = 0
-        self._flags = 0
+        # self._flags = 0
 
     @property
     def date(self):
@@ -382,9 +383,9 @@ class WifiAPRecord():
     def vht_ch_freq2(self):
         return self._vht_ch_freq2
     
-    @property
-    def flags(self):
-        return self._flags
+    # @property
+    # def flags(self):
+    #     return self._flags
 
     @date.setter
     def date(self, val):
@@ -415,7 +416,7 @@ class WifiAPRecord():
         self._bssid = val 
 
     @ssid.setter
-    def ssid():
+    def ssid(self, val):
         self._ssid = val
 
     @primary_channel.setter
@@ -498,12 +499,16 @@ class WifiAPRecord():
     def vht_ch_freq2(self, val):
         self._vht_ch_freq2 = val
     
-    @flags.setter
-    def flags(self, val):
-        self._flags = val
+    # @flags.setter
+    # def flags(self, val):
+    #     self._flags = val
 
     @staticmethod
     def readCSV(content):
         file = io.StringIO(content)
         reader = csv.reader(file)
         return [row for row in reader]
+
+    @property
+    def FIELD_COUNT(self):
+        return self._FIELD_COUNT
