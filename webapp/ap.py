@@ -587,9 +587,6 @@ class WifiAPRecord():
         """
         return snippet
                     
-     
-
-
 class WifiAPRecordCollection:
     def __init__(self, wifi_ap_records):
         self._wifi_ap_records = wifi_ap_records
