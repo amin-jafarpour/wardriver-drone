@@ -136,6 +136,10 @@ def populate_db(file_path):
             db.session.add(record)
             db.session.commit()
 
+@app.route('/')
+def index():
+    return render_template('index.html')
+
 @app.route("/page", methods=["POST"])
 def get_page():
     min_alt = request.form.get('min_alt')
