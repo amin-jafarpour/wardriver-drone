@@ -163,45 +163,6 @@ def get_record():
 
     return jsonify(record.to_dict()), 200
 
-@app.route("/add", methods=["POST"])
-def add_record():
-    data = request.get_json()
-    # if data:
-    #     return jsonify({"message": error}), 400
-    record = Record(
-        date = datetime.strptime(data.get('date'), "%Y-%m-%d").date(),
-        time = datetime.strptime(data.get('time'), "%H:%M:%S").time(),
-        latitude = data.get('latitude'),
-        longitude = data.get('longitude'),
-        altitude = data.get('altitude'),
-        speed = data.get('speed'),
-        bssid = data.get('bssid'),
-        primary_channel = data.get('primary_channel'),
-        second_channel = data.get('second_channel'),
-        rssi = data.get('rssi'),
-        authmode = data.get('authmode'),
-        pairwise_cipher = data.get('pairwise_cipher'),
-        group_cipher = data.get('group_cipher'),
-        ant = data.get('ant'),
-        country_code = data.get('country_code'),
-        country_start_channel = data.get('country_start_channel'),
-        country_end_channel = data.get('country_end_channel'),
-        max_tx_power = data.get('max_tx_power'),
-        country_policy = data.get('country_policy'),
-        wifi_AP_HE = data.get('wifi_AP_HE'),
-        bss_color = data.get('bss_color'),
-        partial_bss_color = data.get('partial_bss_color'),
-        bss_color_disabled = data.get('bss_color_disabled'),
-        bssid_index = data.get('bssid_index'),
-        bandwidth = data.get('bandwidth'),
-        vht_ch_freq1 = data.get('vht_ch_freq1'),
-        vht_ch_freq2 = data.get('vht_ch_freq2'),
-    )
-
-    db.session.add(record)
-    db.session.commit()
-    return jsonify(record.to_dict()), 201
-
 @app.route("/remove/<int:record_id>", methods=["DELETE"])
 def remove_record(record_id):
     record = db.session.get(Record, record_id)
@@ -211,10 +172,6 @@ def remove_record(record_id):
     db.session.delete(record)
     db.session.commit()
     return jsonify({"message": "Deleted"}), 200
-
-
-# def allowed_file(filename):
-#     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/upload')
 def upload():
