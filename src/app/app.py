@@ -1,16 +1,24 @@
 from datetime import datetime
 import os
-from flask import Flask, request, jsonify, redirect, url_for
+from flask import Flask, request, jsonify, redirect, url_for, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
+
+UPLOAD_FOLDER = 'uploads'
+ALLOWED_EXTENSIONS = {'txt', 'csv'}
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///records.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+
+# Ensure upload folder exists
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 class Record(db.Model):
     __tablename__ = "records"
@@ -81,14 +89,6 @@ class Record(db.Model):
             'vht_ch_freq1': self.vht_ch_freq1, 
             'vht_ch_freq2': self.vht_ch_freq2, 
         }
-
-
-@app.route('/')
-def index():
-    return 
-    """
-        index
-    """
 
 @app.route("/home", methods=["GET"])
 def home():
@@ -180,6 +180,86 @@ def remove_record(record_id):
     db.session.commit()
 
     return jsonify({"message": "Deleted"}), 200
+
+
+######################################
+
+
+def populate():
+    with open(filePath, 'r') as file:
+        content = file.read()
+        ap_str_list = ap.WifiAPRecord.readCSV(content)
+        record_list = []
+        for ap_str in ap_str_list:
+            try:
+                record = WifiAPRecord.parse_obj(ap_str)
+                record_list.append(record)
+            except:
+                    continue
+        collection = ap.WifiAPRecordCollection(record_list)
+        collection.filter_invalid_gps_coords()
+        collection.filter_duplicates()
+        filterd_records = collection.wifi_ap_records
+        for record in filterd_records:
+            record = app.Record(
+            date=obj.date,
+            time=obj.time,
+            latitude=obj.latitude,
+            longitude=obj.longitude,
+            altitude=obj.altitude,
+            speed=obj.speed,
+            bssid=obj.bssid,
+            primary_channel=obj.primary_channel,
+            second_channel=obj.second_channel,
+            rssi=obj.rssi,
+            authmode=obj.authmode,
+            pairwise_cipher=obj.pairwise_cipher,
+            group_cipher=obj.group_cipher,
+            ant=obj.ant,
+            country_code=obj.country_code,
+            country_start_channel=obj.country_start_channel,
+            country_end_channel=obj.country_end_channel,
+            max_tx_power=obj.max_tx_power,
+            country_policy=obj.country_policy,
+            wifi_AP_HE=obj.wifi_AP_HE,
+            bss_color=obj.bss_color,
+            partial_bss_color=obj.partial_bss_color,
+            bss_color_disabled=obj.bss_color_disabled,
+            bssid_index=obj.bssid_index,
+            bandwidth=obj.bandwidth,
+            vht_ch_freq1=obj.vht_ch_freq1,
+            vht_ch_freq2=obj.vht_ch_freq2)
+            app.db.session.add(record)
+            app.db.session.commit()
+
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/')
+def index():
+    return render_template('upload.html')
+
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    if 'file' not in request.files:
+        return "No file part"
+
+    file = request.files['file']
+
+    if file.filename == '':
+        return "No selected file"
+
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(filepath)
+        return f"File uploaded to {filepath}"
+        # here
+    return "Invalid file type"
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
 
 # ----------------------
