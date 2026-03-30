@@ -504,7 +504,7 @@ class WifiAPRecord():
 
     @staticmethod
     def parse_obj(ap_str):
-        obj = ap.WifiAPRecord(ap_str[0], ap_str[1], ap_str[2], ap_str[3], ap_str[4], ap_str[5], ap_str[6])
+        obj = WifiAPRecord(ap_str[0], ap_str[1], ap_str[2], ap_str[3], ap_str[4], ap_str[5], ap_str[6])
         obj.ssid = ap_str[7]
         obj.primary_channel = int(ap_str[8])
         obj.second_channel = ap_str[9]
