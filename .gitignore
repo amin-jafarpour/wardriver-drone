@@ -65,3 +65,4 @@ dkms.conf
 **/instance
 **/migrations
 **/uploads
+**/venv
