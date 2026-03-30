@@ -217,7 +217,7 @@ def remove_record(record_id):
 #     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/upload')
-def index():
+def upload():
     return render_template('upload.html')
 
 @app.route('/upload', methods=['POST'])
