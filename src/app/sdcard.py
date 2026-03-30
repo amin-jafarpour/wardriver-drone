@@ -55,39 +55,45 @@ def extraction():
         st.session_state.record_list = record_list
 
 def add_record(obj):
-    record = app.Record(
-        date = obj.date,
-        time = obj.time,
-        latitude = obj.latitude,
-        longitude = obj.longitude,
-        altitude = obj.altitude,
-        speed = obj.speed,
-        bssid = obj.bssid,
-        primary_channel = obj.primary_channel,
-        second_channel = obj.second_channel,
-        rssi = obj.rssi,
-        authmode = obj.authmode,
-        pairwise_cipher = obj.pairwise_cipher,
-        group_cipher = obj.group_cipher,
-        ant = obj.ant,
-        country_code = obj.country_code,
-        country_start_channel = obj.country_start_channel,
-        country_end_channel = obj.country_end_channel,
-        max_tx_power = obj.max_tx_power,
-        country_policy = obj.country_policy,
-        wifi_AP_HE = obj.wifi_AP_HE,
-        bss_color = obj.bss_color,
-        partial_bss_color = obj.partial_bss_color,
-        bss_color_disabled = obj.bss_color_disabled,
-        bssid_index = obj.bssid_index,
-        bandwidth = obj.bandwidth,
-        vht_ch_freq1 = obj.vht_ch_freq1,
-        vht_ch_freq2 = obj.vht_ch_freq2,
-    )
+    with app.app.app_context():
+        try:
+            record = app.Record(
+                date=obj.date,
+                time=obj.time,
+                latitude=obj.latitude,
+                longitude=obj.longitude,
+                altitude=obj.altitude,
+                speed=obj.speed,
+                bssid=obj.bssid,
+                primary_channel=obj.primary_channel,
+                second_channel=obj.second_channel,
+                rssi=obj.rssi,
+                authmode=obj.authmode,
+                pairwise_cipher=obj.pairwise_cipher,
+                group_cipher=obj.group_cipher,
+                ant=obj.ant,
+                country_code=obj.country_code,
+                country_start_channel=obj.country_start_channel,
+                country_end_channel=obj.country_end_channel,
+                max_tx_power=obj.max_tx_power,
+                country_policy=obj.country_policy,
+                wifi_AP_HE=obj.wifi_AP_HE,
+                bss_color=obj.bss_color,
+                partial_bss_color=obj.partial_bss_color,
+                bss_color_disabled=obj.bss_color_disabled,
+                bssid_index=obj.bssid_index,
+                bandwidth=obj.bandwidth,
+                vht_ch_freq1=obj.vht_ch_freq1,
+                vht_ch_freq2=obj.vht_ch_freq2,
+            )
 
-    app.db.session.add(record)
-    app.db.db.session.commit()
-    print('record added')
+            app.db.session.add(record)
+            app.db.session.commit()
+            print("record added")
+
+        except Exception as e:
+            app.db.session.rollback()
+            print(f"DB ERROR: {e}")
 
 
 def recording():
@@ -97,13 +103,9 @@ def recording():
         collection.filter_duplicates()
         filterd_records = collection.wifi_ap_records
         for record in filterd_records:
+            print(record)
             add_record(record)
             
-
-
-
-
-
 def main():
     selection()
     extraction()
