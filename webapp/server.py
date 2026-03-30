@@ -81,9 +81,6 @@ class Record(db.Model):
             'vht_ch_freq2': self.vht_ch_freq2, 
         }
 
-def validate_payload(data, require_name=True):
-    return None
-
 @app.route("/", methods=["GET"])
 def home():
     return jsonify({"status": "ok"}), 200
@@ -127,9 +124,8 @@ def get_record(record_id):
 @app.route("/add", methods=["POST"])
 def add_record():
     data = request.get_json()
-    error = validate_payload(data)
-    if error:
-        return jsonify({"message": error}), 400
+    # if error:
+    #     return jsonify({"message": error}), 400
 
     record = Record(
         date = datetime.strptime(data.get('date'), "%Y-%m-%d").date(),
@@ -167,20 +163,19 @@ def add_record():
     return jsonify(record.to_dict()), 201
 
 
-@app.route("/update/<int:record_id>", methods=["PUT"])
-def update_record(record_id):
-    record = db.session.get(Record, record_id)
-    if not record:
-        return jsonify({"message": "Record not found"}), 404
+# @app.route("/update/<int:record_id>", methods=["PATCH"])
+# def update_record(record_id):
+#     record = db.session.get(Record, record_id)
+#     if not record:
+#         return jsonify({"message": "Record not found"}), 404
 
-    data = request.get_json()
-    error = validate_payload(data, require_name=False)
-    if error:
-        return jsonify({"message": error}), 400
-    record.latitude = data.get("latitude", record.latitude)
+#     data = request.get_json()
+#     # if error:
+#     #     return jsonify({"message": error}), 400
+#     record.latitude = data.get("latitude", record.latitude)
 
-    db.session.commit()
-    return jsonify(record.to_dict()), 200
+#     db.session.commit()
+#     return jsonify(record.to_dict()), 200
 
 
 @app.route("/remove/<int:record_id>", methods=["DELETE"])
