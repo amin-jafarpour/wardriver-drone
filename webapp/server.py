@@ -162,22 +162,6 @@ def add_record():
 
     return jsonify(record.to_dict()), 201
 
-
-# @app.route("/update/<int:record_id>", methods=["PATCH"])
-# def update_record(record_id):
-#     record = db.session.get(Record, record_id)
-#     if not record:
-#         return jsonify({"message": "Record not found"}), 404
-
-#     data = request.get_json()
-#     # if error:
-#     #     return jsonify({"message": error}), 400
-#     record.latitude = data.get("latitude", record.latitude)
-
-#     db.session.commit()
-#     return jsonify(record.to_dict()), 200
-
-
 @app.route("/remove/<int:record_id>", methods=["DELETE"])
 def remove_record(record_id):
     record = db.session.get(Record, record_id)
@@ -196,6 +180,3 @@ def remove_record(record_id):
 if __name__ == "__main__":
     app.run(debug=True)
 
-# flask db init
-# flask db migrate -m "Initial migration"
-# flask db upgrade
