@@ -236,7 +236,7 @@ vht_ch_freq1,
 vht_ch_freq2,
 flags
 """
-class WifiAPRecord():
+class WifiAPRecord(): 
     _FIELD_COUNT = 28
     def __init__(self, date, time, latitude, longitude, altitude, speed, bssid):
         # Required fields
@@ -269,7 +269,6 @@ class WifiAPRecord():
         self._bandwidth = WifiBandwidth.WIFI_BW_ERROR
         self._vht_ch_freq1 = 0
         self._vht_ch_freq2 = 0
-        # self._flags = 0
 
     # getters
     @property
@@ -383,10 +382,6 @@ class WifiAPRecord():
     @property
     def vht_ch_freq2(self):
         return self._vht_ch_freq2
-    
-    # @property
-    # def flags(self):
-    #     return self._flags
 
     # setters
     @date.setter
@@ -500,16 +495,39 @@ class WifiAPRecord():
     @vht_ch_freq2.setter
     def vht_ch_freq2(self, val):
         self._vht_ch_freq2 = val
-    
-    # @flags.setter
-    # def flags(self, val):
-    #     self._flags = val
 
     @staticmethod
     def readCSV(content):
         file = io.StringIO(content)
         reader = csv.reader(file)
         return [row for row in reader]
+
+    @staticmethod
+    def parse_obj(ap_str):
+        obj = ap.WifiAPRecord(ap_str[0], ap_str[1], ap_str[2], ap_str[3], ap_str[4], ap_str[5], ap_str[6])
+        obj.ssid = ap_str[7]
+        obj.primary_channel = int(ap_str[8])
+        obj.second_channel = ap_str[9]
+        obj.rssi = int(ap_str[10])
+        obj.authmode = ap_str[11]
+        obj.pairwise_cipher = ap_str[12]
+        obj.group_cipher = ap_str[13]
+        obj._ant = ap_str[14]
+        obj.country_code = ap_str[15]
+        obj.country_start_channel = int(ap_str[16])
+        obj.country_end_channel = int(ap_str[17])
+        obj.max_tx_power = int(ap_str[18])
+        obj.country_policy = ap_str[19]
+        obj.wifi_AP_HE = int(ap_str[20])
+        obj.bss_color = int(ap_str[21])
+        obj.partial_bss_color = int(ap_str[22])
+        obj.bss_color_disabled = int(ap_str[23])
+        obj.bssid_index = ap_str[24]
+        obj.bandwidth = ap_str[25]
+        obj.vht_ch_freq1 = int(ap_str[26])
+        obj.vht_ch_freq2 = int(ap_str[27])
+        return obj
+
 
     @property
     def FIELD_COUNT(self):
