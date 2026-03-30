@@ -586,6 +586,38 @@ class WifiAPRecord():
         vht_ch_freq2: {str(self._vht_ch_freq2)}
         """
         return snippet
+
+    def to_dict(self):
+        return {
+            'date': self._date.strftime("%Y-%m-%d"),
+            'time': self._time.strftime("%H:%M:%S"),
+            'latitude': self._latitude,
+            'longitude': self._longitude,
+            'altitude': self._altitude,
+            'speed': self._speed,
+            'bssid': self._bssid,
+            'ssid': self._ssid,
+            'primary_channel': self._primary_channel,
+            'second_channel': self._second_channel.value if isinstance(self._second_channel, Enum) else self._second_channel,
+            'rssi': self._rssi,
+            'authmode': self._authmode.value if isinstance(self._authmode, Enum) else self._authmode,
+            'pairwise_cipher': self._pairwise_cipher.value if isinstance(self._pairwise_cipher, Enum) else self._pairwise_cipher,
+            'group_cipher': self._group_cipher.value if isinstance(self._group_cipher, Enum) else self._group_cipher,
+            'ant': self._ant.value if isinstance(self._ant, Enum) else self._ant,
+            'country_code': self._country_code,
+            'country_start_channel': self._country_start_channel,
+            'country_end_channel': self._country_end_channel,
+            'max_tx_power': self._max_tx_power,
+            'country_policy': self._country_policy.value if isinstance(self._country_policy, Enum) else self._country_policy,
+            'wifi_AP_HE': self._wifi_AP_HE,
+            'bss_color': self._bss_color,
+            'partial_bss_color': self._partial_bss_color,
+            'bss_color_disabled': self._bss_color_disabled,
+            'bssid_index': self._bssid_index,
+            'bandwidth': self._bandwidth.value if isinstance(self._bandwidth, Enum) else self._bandwidth,
+            'vht_ch_freq1': self._vht_ch_freq1,
+            'vht_ch_freq2': self._vht_ch_freq2,
+        }
                     
 class WifiAPRecordCollection:
     def __init__(self, wifi_ap_records):
