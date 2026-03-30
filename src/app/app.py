@@ -4,6 +4,7 @@ from flask import Flask, request, jsonify, redirect, url_for, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from werkzeug.utils import secure_filename
+import ap
 
 app = Flask(__name__)
 
@@ -185,7 +186,7 @@ def remove_record(record_id):
 ######################################
 
 
-def populate():
+def populate(filePath):
     with open(filePath, 'r') as file:
         content = file.read()
         ap_str_list = ap.WifiAPRecord.readCSV(content)
@@ -258,8 +259,7 @@ def upload_file():
         return f"File uploaded to {filepath}"
     return "Invalid file type"
 
-if __name__ == '__main__':
-    app.run(debug=True)
+
 
 
 # ----------------------
