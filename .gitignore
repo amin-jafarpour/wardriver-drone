@@ -59,3 +59,6 @@ dkms.conf
 **/managed_components/
 **/.vscode/
 **/dependencies.lock
+
+# Python3 files and directories to ignore
+**/__pycache__
