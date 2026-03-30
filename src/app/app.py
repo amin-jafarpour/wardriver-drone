@@ -183,9 +183,6 @@ def remove_record(record_id):
     return jsonify({"message": "Deleted"}), 200
 
 
-######################################
-
-
 def populate(file_path):
     with open(file_path, 'r') as file:
         content = file.read()
@@ -260,7 +257,18 @@ def upload_file():
     return "Invalid file type"
 
 
+@app.route("/clear", methods=["DELETE"])
+def clear_db():
+    db.session.query(Record).delete()
+    db.session.commit()
+    return {"message": "All records deleted"}, 200
 
+
+@app.route("/destory", methods=["DELETE"])
+def destory():
+    db.drop_all()
+d   b.create_all()
+    return {"message": "All records deleted"}, 200
 
 
 
