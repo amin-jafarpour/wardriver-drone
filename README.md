@@ -91,5 +91,5 @@ streamlit run dashboard_app.py
 
 ## Authors
 
-. Amin Jafarpour
-. Radman Mohammadi
+* Amin Jafarpour
+* Radman Mohammadi
