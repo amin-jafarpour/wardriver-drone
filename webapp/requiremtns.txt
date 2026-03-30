@@ -3,4 +3,6 @@ Flask-SQLAlchemy
 Flask-Migrate
 folium
 streamlit
+psutil
+
 
