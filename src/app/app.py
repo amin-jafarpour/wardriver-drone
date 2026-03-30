@@ -208,7 +208,7 @@ def populate(file_path):
             latitude=obj.latitude,
             longitude=obj.longitude,
             altitude=obj.altitude,
-            speed= 3.3, #obj.speed
+            speed=obj.speed,
             bssid=obj.bssid,
             primary_channel=obj.primary_channel,
             second_channel=obj.second_channel,

@@ -293,7 +293,7 @@ class WifiAPRecord():
 
     @property
     def speed(self):
-        self._speed
+        return self._speed
 
     @property
     def bssid(self):
