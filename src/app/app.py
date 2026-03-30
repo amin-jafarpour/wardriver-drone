@@ -1,25 +1,23 @@
-from datetime import datetime
 import os
+from datetime import datetime
 from flask import Flask, request, jsonify, redirect, url_for, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from werkzeug.utils import secure_filename
+import werkzeug.utils
 import ap
 
 app = Flask(__name__)
 
 UPLOAD_FOLDER = 'uploads'
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 ALLOWED_EXTENSIONS = {'txt', 'csv'}
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///records.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
-
-# Ensure upload folder exists
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 class Record(db.Model):
     __tablename__ = "records"
@@ -91,99 +89,7 @@ class Record(db.Model):
             'vht_ch_freq2': self.vht_ch_freq2, 
         }
 
-@app.route("/home", methods=["GET"])
-def home():
-    return jsonify({"status": "ok"}), 200
-
-@app.route("/coords", methods=["GET"])
-def get_coords():
-    records = db.session.query(
-        Record.id,
-        Record.date,
-        Record.time,
-        Record.latitude,
-        Record.longitude,
-        Record.altitude,
-        Record.speed,
-        Record.bssid
-    ).all()
-
-    return jsonify([
-        {
-            'id': record.id,
-            'date': record.date.isoformat() if record.date else None,
-            'time': record.time.isoformat() if record.time else None,
-            'latitude': record.latitude,
-            'longitude': record.longitude,
-            'altitude': record.altitude,
-            'speed': record.speed,
-            'bssid': record.bssid
-        }
-        for record in records
-    ]), 200
-
-@app.route("/get/<int:record_id>", methods=["GET"])
-def get_record(record_id):
-    record = db.session.get(Record, record_id)
-    if not record:
-        return jsonify({"message": "record not found"}), 404
-
-    return jsonify(record.to_dict()), 200
-
-@app.route("/add", methods=["POST"])
-def add_record():
-    data = request.get_json()
-    # if error:
-    #     return jsonify({"message": error}), 400
-
-    record = Record(
-        date = datetime.strptime(data.get('date'), "%Y-%m-%d").date(),
-        time = datetime.strptime(data.get('time'), "%H:%M:%S").time(),
-        latitude = data.get('latitude'),
-        longitude = data.get('longitude'),
-        altitude = data.get('altitude'),
-        speed = data.get('speed'),
-        bssid = data.get('bssid'),
-        primary_channel = data.get('primary_channel'),
-        second_channel = data.get('second_channel'),
-        rssi = data.get('rssi'),
-        authmode = data.get('authmode'),
-        pairwise_cipher = data.get('pairwise_cipher'),
-        group_cipher = data.get('group_cipher'),
-        ant = data.get('ant'),
-        country_code = data.get('country_code'),
-        country_start_channel = data.get('country_start_channel'),
-        country_end_channel = data.get('country_end_channel'),
-        max_tx_power = data.get('max_tx_power'),
-        country_policy = data.get('country_policy'),
-        wifi_AP_HE = data.get('wifi_AP_HE'),
-        bss_color = data.get('bss_color'),
-        partial_bss_color = data.get('partial_bss_color'),
-        bss_color_disabled = data.get('bss_color_disabled'),
-        bssid_index = data.get('bssid_index'),
-        bandwidth = data.get('bandwidth'),
-        vht_ch_freq1 = data.get('vht_ch_freq1'),
-        vht_ch_freq2 = data.get('vht_ch_freq2'),
-    )
-
-    db.session.add(record)
-    db.session.commit()
-
-    return jsonify(record.to_dict()), 201
-
-@app.route("/remove/<int:record_id>", methods=["DELETE"])
-def remove_record(record_id):
-    record = db.session.get(Record, record_id)
-    if not record:
-        return jsonify({"message": "Record not found"}), 404
-
-    db.session.delete(record)
-    db.session.commit()
-
-    return jsonify({"message": "Deleted"}), 200
-
-
-def populate(file_path):
+def populate_db(file_path):
     with open(file_path, 'r') as file:
         content = file.read()
         ap_str_list = ap.WifiAPRecord.readCSV(content)
@@ -230,11 +136,83 @@ def populate(file_path):
             db.session.add(record)
             db.session.commit()
 
+@app.route("/page", methods=["POST"])
+def get_page():
+    min_alt = request.form.get('min_alt')
+    max_alt = request.form.get('max_alt')
+    min_lon = request.form.get('min_lon')
+    max_lon = request.form.get('max_lon')
 
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    records = Record.query.filter(
+        Record.altitude.between(min_alt, max_alt),
+        Record.longitude.between(min_lon, max_lon)
+    ).all()
 
-@app.route('/')
+    return jsonify([record for record in records]), 200
+
+@app.route("/get", methods=["POST"])
+def get_record():
+    record_id = request.form.get('record_id')
+    record = db.session.get(Record, record_id)
+    if not record:
+        return jsonify({"message": "record not found"}), 404
+
+    return jsonify(record.to_dict()), 200
+
+@app.route("/add", methods=["POST"])
+def add_record():
+    data = request.get_json()
+    # if data:
+    #     return jsonify({"message": error}), 400
+    record = Record(
+        date = datetime.strptime(data.get('date'), "%Y-%m-%d").date(),
+        time = datetime.strptime(data.get('time'), "%H:%M:%S").time(),
+        latitude = data.get('latitude'),
+        longitude = data.get('longitude'),
+        altitude = data.get('altitude'),
+        speed = data.get('speed'),
+        bssid = data.get('bssid'),
+        primary_channel = data.get('primary_channel'),
+        second_channel = data.get('second_channel'),
+        rssi = data.get('rssi'),
+        authmode = data.get('authmode'),
+        pairwise_cipher = data.get('pairwise_cipher'),
+        group_cipher = data.get('group_cipher'),
+        ant = data.get('ant'),
+        country_code = data.get('country_code'),
+        country_start_channel = data.get('country_start_channel'),
+        country_end_channel = data.get('country_end_channel'),
+        max_tx_power = data.get('max_tx_power'),
+        country_policy = data.get('country_policy'),
+        wifi_AP_HE = data.get('wifi_AP_HE'),
+        bss_color = data.get('bss_color'),
+        partial_bss_color = data.get('partial_bss_color'),
+        bss_color_disabled = data.get('bss_color_disabled'),
+        bssid_index = data.get('bssid_index'),
+        bandwidth = data.get('bandwidth'),
+        vht_ch_freq1 = data.get('vht_ch_freq1'),
+        vht_ch_freq2 = data.get('vht_ch_freq2'),
+    )
+
+    db.session.add(record)
+    db.session.commit()
+    return jsonify(record.to_dict()), 201
+
+@app.route("/remove/<int:record_id>", methods=["DELETE"])
+def remove_record(record_id):
+    record = db.session.get(Record, record_id)
+    if not record:
+        return jsonify({"message": "Record not found"}), 404
+
+    db.session.delete(record)
+    db.session.commit()
+    return jsonify({"message": "Deleted"}), 200
+
+
+# def allowed_file(filename):
+#     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/upload')
 def index():
     return render_template('upload.html')
 
@@ -242,14 +220,14 @@ def index():
 def upload_file():
     if 'file' not in request.files:
         return "No file part"
-
     file = request.files['file']
-
     if file.filename == '':
         return "No selected file"
 
+    allowed_file = lambda filename: '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
     if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
+        filename =  werkzeug.utils.secure_filename(file.filename)
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(filepath)
         populate(filepath)
@@ -257,21 +235,18 @@ def upload_file():
     return "Invalid file type"
 
 
-@app.route("/clear", methods=["DELETE"])
+@app.route("/cleardb", methods=["DELETE"])
 def clear_db():
     db.session.query(Record).delete()
     db.session.commit()
     return {"message": "All records deleted"}, 200
 
 
-@app.route("/destory", methods=["DELETE"])
+@app.route("/destorydb", methods=["DELETE"])
 def destory():
     db.drop_all()
-d   b.create_all()
+    db.create_all()
     return {"message": "All records deleted"}, 200
-
-
-
 
 # ----------------------
 # Entry point
