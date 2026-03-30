@@ -2,7 +2,7 @@ import psutil
 import os
 import streamlit as st
 import ap
-import server
+import app
 
 def get_partitions():
     partitions = [
@@ -55,7 +55,7 @@ def extraction():
         st.session_state.record_list = record_list
 
 def add_record(obj):
-    record = server.Record(
+    record = app.Record(
         date = obj.date,
         time = obj.time,
         latitude = obj.latitude,
@@ -85,8 +85,8 @@ def add_record(obj):
         vht_ch_freq2 = obj.vht_ch_freq2,
     )
 
-    db.session.add(record)
-    db.session.commit()
+    app.db.session.add(record)
+    app.db.db.session.commit()
     print('record added')
 
 
