@@ -1,4 +1,5 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, redirect, url_for
+import os
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from datetime import datetime
@@ -7,7 +8,10 @@ app = Flask(__name__)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///records.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config['UPLOAD_FOLDER'] = 'upload'
 
+
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
@@ -81,7 +85,17 @@ class Record(db.Model):
             'vht_ch_freq2': self.vht_ch_freq2, 
         }
 
-@app.route("/", methods=["GET"])
+
+@app.route('/')
+def index():
+    return '''
+    <form method="POST" action="/upload" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <input type="submit">
+    </form>
+    '''
+
+@app.route("/home", methods=["GET"])
 def home():
     return jsonify({"status": "ok"}), 200
 
@@ -172,6 +186,23 @@ def remove_record(record_id):
     db.session.commit()
 
     return jsonify({"message": "Deleted"}), 200
+
+
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    if 'file' not in request.files:
+        return "No file part"
+
+    file = request.files['file']
+
+    if file.filename == '':
+        return "No selected file"
+
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+    file.save(filepath)
+
+    return f"File uploaded to {filepath}"
+
 
 
 # ----------------------
