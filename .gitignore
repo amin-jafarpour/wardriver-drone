@@ -62,3 +62,6 @@ dkms.conf
 
 # Python3 files and directories to ignore
 **/__pycache__
+**/instance
+**/migrations
+**/uploads

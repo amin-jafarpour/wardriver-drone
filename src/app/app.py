@@ -186,29 +186,29 @@ def remove_record(record_id):
 ######################################
 
 
-def populate(filePath):
-    with open(filePath, 'r') as file:
+def populate(file_path):
+    with open(file_path, 'r') as file:
         content = file.read()
         ap_str_list = ap.WifiAPRecord.readCSV(content)
         record_list = []
         for ap_str in ap_str_list:
             try:
-                record = WifiAPRecord.parse_obj(ap_str)
+                record = ap.WifiAPRecord.parse_obj(ap_str)
                 record_list.append(record)
-            except:
+            except Exception as e:    
                     continue
         collection = ap.WifiAPRecordCollection(record_list)
         collection.filter_invalid_gps_coords()
         collection.filter_duplicates()
         filterd_records = collection.wifi_ap_records
-        for record in filterd_records:
-            record = app.Record(
+        for obj in filterd_records:
+            record = Record(
             date=obj.date,
             time=obj.time,
             latitude=obj.latitude,
             longitude=obj.longitude,
             altitude=obj.altitude,
-            speed=obj.speed,
+            speed= 3.3, #obj.speed
             bssid=obj.bssid,
             primary_channel=obj.primary_channel,
             second_channel=obj.second_channel,
@@ -230,8 +230,8 @@ def populate(filePath):
             bandwidth=obj.bandwidth,
             vht_ch_freq1=obj.vht_ch_freq1,
             vht_ch_freq2=obj.vht_ch_freq2)
-            app.db.session.add(record)
-            app.db.session.commit()
+            db.session.add(record)
+            db.session.commit()
 
 
 def allowed_file(filename):
@@ -258,6 +258,9 @@ def upload_file():
         populate(filepath)
         return f"File uploaded to {filepath}"
     return "Invalid file type"
+
+
+
 
 
 
