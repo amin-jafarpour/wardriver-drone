@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Records</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+            margin: 0;
+            padding: 24px;
+            color: #222;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        input[type="file"] {
+            margin-top: 12px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            width: 100%;
+        }
+
+        button {
+            margin-top: 16px;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            background: #2563eb;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .secondary {
+            background: #6b7280;
+        }
+
+        .secondary:hover {
+            background: #4b5563;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .status {
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .info {
+            background: #eef2ff;
+            color: #1e3a8a;
+        }
+
+        .small {
+            font-size: 13px;
+            color: #555;
+        }
+
+        a {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .progress {
+            margin-top: 10px;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 999px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: #2563eb;
+            transition: width 0.2s ease;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <h1>Upload Wardriving Data</h1>
+
+        <p class="small">
+            Upload a <strong>.csv</strong> or <strong>.txt</strong> file containing WiFi AP scan data.
+            The backend will parse, filter invalid GPS coordinates, remove duplicates, and insert into the database.
+        </p>
+
+        <form id="uploadForm">
+            <input type="file" id="fileInput" name="file" accept=".csv,.txt" required>
+
+            <div class="actions">
+                <button type="submit">Upload</button>
+                <button type="button" class="secondary" id="resetBtn">Reset</button>
+                <a href="/">← Back to Viewer</a>
+            </div>
+        </form>
+
+        <div class="progress" id="progressBarContainer">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <div id="statusBox" class="status"></div>
+    </div>
+</div>
+
+<script>
+    const form = document.getElementById("uploadForm");
+    const fileInput = document.getElementById("fileInput");
+    const statusBox = document.getElementById("statusBox");
+    const progressContainer = document.getElementById("progressBarContainer");
+    const progressBar = document.getElementById("progressBar");
+
+    function showStatus(message, type="info") {
+        statusBox.textContent = message;
+        statusBox.className = "status " + type;
+        statusBox.style.display = "block";
+    }
+
+    function hideStatus() {
+        statusBox.style.display = "none";
+    }
+
+    function resetProgress() {
+        progressBar.style.width = "0%";
+        progressContainer.style.display = "none";
+    }
+
+    form.addEventListener("submit", function(e) {
+        e.preventDefault();
+        hideStatus();
+
+        const file = fileInput.files[0];
+        if (!file) {
+            showStatus("Please select a file first.", "error");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "/upload", true);
+
+        progressContainer.style.display = "block";
+
+        xhr.upload.onprogress = function(e) {
+            if (e.lengthComputable) {
+                const percent = (e.loaded / e.total) * 100;
+                progressBar.style.width = percent + "%";
+            }
+        };
+
+        xhr.onload = function() {
+            resetProgress();
+
+            if (xhr.status >= 200 && xhr.status < 300) {
+                showStatus(xhr.responseText || "Upload successful.", "success");
+                form.reset();
+            } else {
+                showStatus(xhr.responseText || "Upload failed.", "error");
+            }
+        };
+
+        xhr.onerror = function() {
+            resetProgress();
+            showStatus("Network error during upload.", "error");
+        };
+
+        xhr.send(formData);
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", function() {
+        form.reset();
+        resetProgress();
+        hideStatus();
+    });
+</script>
+
+</body>
+</html>

@@ -202,13 +202,6 @@ def clear_db():
     db.session.commit()
     return {"message": "All records deleted"}, 200
 
-
-@app.route("/destorydb", methods=["DELETE"])
-def destory():
-    db.drop_all()
-    db.create_all()
-    return {"message": "All records deleted"}, 200
-
 # ----------------------
 # Entry point
 # ----------------------
