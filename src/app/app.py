@@ -152,7 +152,7 @@ def get_page():
         Record.longitude.between(min_lon, max_lon)
     ).all()
 
-    return jsonify([record for record in records]), 200
+    return jsonify([record.to_dict() for record in records]), 200
 
 @app.route("/get", methods=["POST"])
 def get_record():
