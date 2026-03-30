@@ -5,11 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Wardriving Records Viewer</title>
 
-    <!-- Leaflet -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -19,8 +25,31 @@
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1500px;
             margin: 0 auto;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .page-header h1 {
+            margin: 0;
+        }
+
+        .page-header a {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .page-header a:hover {
+            text-decoration: underline;
         }
 
         .card {
@@ -37,11 +66,18 @@
             gap: 14px;
         }
 
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
         input {
             width: 100%;
             padding: 10px;
             border-radius: 8px;
             border: 1px solid #ccc;
+            background: #fff;
         }
 
         button {
@@ -51,21 +87,123 @@
             background: #2563eb;
             color: white;
             cursor: pointer;
+            font-weight: 600;
         }
 
-        button.secondary { background: #6b7280; }
-        button.danger { background: #dc2626; }
+        button:hover {
+            opacity: 0.95;
+        }
+
+        button.secondary {
+            background: #6b7280;
+        }
+
+        button.danger {
+            background: #dc2626;
+        }
 
         .actions {
             margin-top: 12px;
             display: flex;
             gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .status {
+            margin-top: 12px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .status.success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status.info {
+            background: #e0f2fe;
+            color: #075985;
+        }
+
+        .map-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 2fr) minmax(320px, 420px);
+            gap: 16px;
+            margin-top: 16px;
+            align-items: start;
         }
 
         #map {
-            height: 400px;
+            height: 520px;
             border-radius: 12px;
-            margin-top: 16px;
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+        }
+
+        .side-panel {
+            min-height: 520px;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 16px;
+            background: #fafafa;
+            overflow-y: auto;
+        }
+
+        .side-panel h3 {
+            margin-top: 0;
+            margin-bottom: 8px;
+        }
+
+        .panel-note {
+            color: #555;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .detail-list {
+            display: grid;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .detail-row {
+            padding: 10px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            background: white;
+        }
+
+        .detail-key {
+            font-size: 12px;
+            font-weight: 700;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 4px;
+        }
+
+        .detail-value {
+            font-size: 14px;
+            word-break: break-word;
+        }
+
+        .results-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .small {
+            color: #666;
+            font-size: 14px;
         }
 
         table {
@@ -75,42 +213,84 @@
         }
 
         th, td {
-            padding: 8px;
+            padding: 10px 8px;
             border-bottom: 1px solid #ddd;
+            text-align: left;
+            vertical-align: top;
+            font-size: 14px;
+        }
+
+        thead th {
+            background: #f9fafb;
+        }
+
+        tbody tr {
+            cursor: pointer;
+        }
+
+        tbody tr:hover {
+            background: #f8fbff;
+        }
+
+        tbody tr.selected-row {
+            background: #e8f0ff;
         }
 
         .pagination {
-            margin-top: 12px;
+            margin-top: 14px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
         }
 
-        .status {
-            margin-top: 10px;
-            padding: 8px;
-            border-radius: 8px;
-            display: none;
+        .mono {
+            font-family: monospace;
         }
 
-        .success { background: #dcfce7; }
-        .error { background: #fee2e2; }
+        @media (max-width: 1000px) {
+            .map-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .side-panel {
+                min-height: auto;
+            }
+
+            #map {
+                height: 420px;
+            }
+        }
     </style>
 </head>
 <body>
-
 <div class="container">
+    <div class="page-header">
+        <h1>Wardriving Records Viewer</h1>
+        <a href="/upload">Upload CSV</a>
+    </div>
 
-    <h1>Wardriving Records Viewer</h1>
-    <a href="/upload">Upload CSV</a>
-
-    <!-- MAP + FILTER -->
     <div class="card">
         <h2>Map Filter (Bounding Box)</h2>
 
         <form id="filterForm">
             <div class="grid">
-                <input type="number" step="any" id="min_lat" name="min_lat" placeholder="Min Lat">
-                <input type="number" step="any" id="max_lat" name="max_lat" placeholder="Max Lat">
-                <input type="number" step="any" id="min_lon" name="min_lon" placeholder="Min Lon">
-                <input type="number" step="any" id="max_lon" name="max_lon" placeholder="Max Lon">
+                <div>
+                    <label for="min_lat">Min Latitude</label>
+                    <input type="number" step="any" id="min_lat" name="min_lat" placeholder="Min Lat">
+                </div>
+                <div>
+                    <label for="max_lat">Max Latitude</label>
+                    <input type="number" step="any" id="max_lat" name="max_lat" placeholder="Max Lat">
+                </div>
+                <div>
+                    <label for="min_lon">Min Longitude</label>
+                    <input type="number" step="any" id="min_lon" name="min_lon" placeholder="Min Lon">
+                </div>
+                <div>
+                    <label for="max_lon">Max Longitude</label>
+                    <input type="number" step="any" id="max_lon" name="max_lon" placeholder="Max Lon">
+                </div>
             </div>
 
             <div class="actions">
@@ -119,13 +299,26 @@
             </div>
         </form>
 
-        <div id="map"></div>
+        <div class="map-layout">
+            <div id="map"></div>
+
+            <aside class="side-panel" id="detailsPanel">
+                <h3>Selected Point Details</h3>
+                <div class="panel-note" id="detailsPlaceholder">
+                    Click a dot on the map or a row in the table to see all fields for that record here.
+                </div>
+                <div class="detail-list" id="detailsList"></div>
+            </aside>
+        </div>
+
         <div id="filterStatus" class="status"></div>
     </div>
 
-    <!-- TABLE -->
     <div class="card">
-        <h2>Results</h2>
+        <div class="results-header">
+            <h2 style="margin: 0;">Results</h2>
+            <div class="small">Click a row to focus the corresponding record details.</div>
+        </div>
 
         <table>
             <thead>
@@ -137,127 +330,316 @@
                     <th>BSSID</th>
                 </tr>
             </thead>
-            <tbody id="resultsBody"></tbody>
+            <tbody id="resultsBody">
+                <tr>
+                    <td colspan="5">No data loaded.</td>
+                </tr>
+            </tbody>
         </table>
 
         <div class="pagination">
-            <button id="prevBtn">Prev</button>
-            <span id="pageInfo"></span>
-            <button id="nextBtn">Next</button>
+            <button id="prevBtn" type="button" class="secondary">Prev</button>
+            <span id="pageInfo">Page 0 / 0</span>
+            <button id="nextBtn" type="button" class="secondary">Next</button>
         </div>
     </div>
-
 </div>
 
 <script>
-const PAGE_SIZE = 10;
-let allResults = [];
-let currentPage = 1;
+    const PAGE_SIZE = 10;
+    let allResults = [];
+    let currentPage = 1;
+    let selectedRecordId = null;
+    let markerById = {};
 
-// ---------------- MAP ----------------
-const map = L.map('map').setView([49.25, -123.1], 11);
+    const resultsBody = document.getElementById("resultsBody");
+    const pageInfo = document.getElementById("pageInfo");
+    const filterForm = document.getElementById("filterForm");
+    const filterStatus = document.getElementById("filterStatus");
+    const detailsList = document.getElementById("detailsList");
+    const detailsPlaceholder = document.getElementById("detailsPlaceholder");
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    const minLatInput = document.getElementById("min_lat");
+    const maxLatInput = document.getElementById("max_lat");
+    const minLonInput = document.getElementById("min_lon");
+    const maxLonInput = document.getElementById("max_lon");
 
-let markers = L.layerGroup().addTo(map);
+    // ---------------- MAP ----------------
+    const map = L.map("map").setView([49.25, -123.1], 11);
 
-// Map → inputs
-function updateInputsFromMap() {
-    const b = map.getBounds();
-    min_lat.value = b.getSouth();
-    max_lat.value = b.getNorth();
-    min_lon.value = b.getWest();
-    max_lon.value = b.getEast();
-}
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "&copy; OpenStreetMap contributors"
+    }).addTo(map);
 
-map.on("moveend", updateInputsFromMap);
-updateInputsFromMap();
+    const markersLayer = L.layerGroup().addTo(map);
 
-// Inputs → map
-function updateMapFromInputs() {
-    const bounds = [
-        [parseFloat(min_lat.value), parseFloat(min_lon.value)],
-        [parseFloat(max_lat.value), parseFloat(max_lon.value)]
-    ];
-    map.fitBounds(bounds);
-}
-
-[min_lat, max_lat, min_lon, max_lon].forEach(el => {
-    el.addEventListener("change", updateMapFromInputs);
-});
-
-// ---------------- TABLE ----------------
-function renderTable() {
-    const body = resultsBody;
-    body.innerHTML = "";
-
-    if (!allResults.length) {
-        body.innerHTML = "<tr><td colspan='5'>No data</td></tr>";
-        return;
+    function showStatus(message, type = "info") {
+        filterStatus.textContent = message;
+        filterStatus.className = "status " + type;
+        filterStatus.style.display = "block";
     }
 
-    const start = (currentPage - 1) * PAGE_SIZE;
-    const page = allResults.slice(start, start + PAGE_SIZE);
-
-    for (const r of page) {
-        body.innerHTML += `
-            <tr>
-                <td>${r.id}</td>
-                <td>${r.latitude}</td>
-                <td>${r.longitude}</td>
-                <td>${r.altitude}</td>
-                <td>${r.bssid}</td>
-            </tr>`;
+    function hideStatus() {
+        filterStatus.style.display = "none";
     }
 
-    pageInfo.textContent = `Page ${currentPage} / ${Math.ceil(allResults.length / PAGE_SIZE)}`;
-}
-
-// ---------------- MAP POINTS ----------------
-function renderPoints() {
-    markers.clearLayers();
-
-    for (const r of allResults) {
-        if (r.latitude && r.longitude) {
-            L.circleMarker([r.latitude, r.longitude], { radius: 4 })
-                .bindPopup(`ID: ${r.id}`)
-                .addTo(markers);
+    function formatNumber(value) {
+        const num = Number(value);
+        if (Number.isNaN(num)) {
+            return value;
         }
+        return num.toFixed(6);
     }
-}
 
-// ---------------- FETCH ----------------
-filterForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
+    function formatLabel(key) {
+        return key
+            .replace(/_/g, " ")
+            .replace(/\b\w/g, char => char.toUpperCase());
+    }
 
-    const formData = new FormData(filterForm);
+    function formatValue(value) {
+        if (value === null || value === undefined || value === "") {
+            return "N/A";
+        }
+        if (typeof value === "number") {
+            return String(value);
+        }
+        if (typeof value === "boolean") {
+            return value ? "true" : "false";
+        }
+        return String(value);
+    }
 
-    const res = await fetch("/page", {
-        method: "POST",
-        body: formData
+    function updateInputsFromMap() {
+        const bounds = map.getBounds();
+        minLatInput.value = bounds.getSouth().toFixed(6);
+        maxLatInput.value = bounds.getNorth().toFixed(6);
+        minLonInput.value = bounds.getWest().toFixed(6);
+        maxLonInput.value = bounds.getEast().toFixed(6);
+    }
+
+    function updateMapFromInputs() {
+        const minLat = parseFloat(minLatInput.value);
+        const maxLat = parseFloat(maxLatInput.value);
+        const minLon = parseFloat(minLonInput.value);
+        const maxLon = parseFloat(maxLonInput.value);
+
+        if ([minLat, maxLat, minLon, maxLon].some(Number.isNaN)) {
+            return;
+        }
+
+        if (minLat >= maxLat || minLon >= maxLon) {
+            return;
+        }
+
+        const bounds = L.latLngBounds(
+            [minLat, minLon],
+            [maxLat, maxLon]
+        );
+
+        map.fitBounds(bounds, { animate: true, padding: [10, 10] });
+    }
+
+    map.on("moveend", updateInputsFromMap);
+    updateInputsFromMap();
+
+    [minLatInput, maxLatInput, minLonInput, maxLonInput].forEach(input => {
+        input.addEventListener("change", updateMapFromInputs);
     });
 
-    const data = await res.json();
+    function clearDetailsPanel() {
+        selectedRecordId = null;
+        detailsList.innerHTML = "";
+        detailsPlaceholder.style.display = "block";
+        updateSelectedRow();
+    }
 
-    allResults = data;
-    currentPage = 1;
+    function renderDetails(record) {
+        selectedRecordId = record.id;
+        detailsList.innerHTML = "";
+        detailsPlaceholder.style.display = "none";
+
+        const entries = Object.entries(record);
+
+        for (const [key, value] of entries) {
+            const row = document.createElement("div");
+            row.className = "detail-row";
+            row.innerHTML = `
+                <div class="detail-key">${formatLabel(key)}</div>
+                <div class="detail-value">${formatValue(value)}</div>
+            `;
+            detailsList.appendChild(row);
+        }
+
+        updateSelectedRow();
+    }
+
+    function updateSelectedRow() {
+        const rows = resultsBody.querySelectorAll("tr[data-record-id]");
+        rows.forEach(row => {
+            if (String(row.dataset.recordId) === String(selectedRecordId)) {
+                row.classList.add("selected-row");
+            } else {
+                row.classList.remove("selected-row");
+            }
+        });
+    }
+
+    function renderTable() {
+        resultsBody.innerHTML = "";
+
+        if (!allResults.length) {
+            resultsBody.innerHTML = "<tr><td colspan='5'>No data</td></tr>";
+            pageInfo.textContent = "Page 0 / 0";
+            document.getElementById("prevBtn").disabled = true;
+            document.getElementById("nextBtn").disabled = true;
+            return;
+        }
+
+        const totalPages = Math.ceil(allResults.length / PAGE_SIZE);
+        if (currentPage < 1) currentPage = 1;
+        if (currentPage > totalPages) currentPage = totalPages;
+
+        const start = (currentPage - 1) * PAGE_SIZE;
+        const page = allResults.slice(start, start + PAGE_SIZE);
+
+        for (const r of page) {
+            const tr = document.createElement("tr");
+            tr.dataset.recordId = r.id;
+            tr.innerHTML = `
+                <td>${formatValue(r.id)}</td>
+                <td>${formatValue(r.latitude)}</td>
+                <td>${formatValue(r.longitude)}</td>
+                <td>${formatValue(r.altitude)}</td>
+                <td class="mono">${formatValue(r.bssid)}</td>
+            `;
+
+            tr.addEventListener("click", () => {
+                renderDetails(r);
+
+                if (markerById[r.id]) {
+                    map.setView([r.latitude, r.longitude], Math.max(map.getZoom(), 14));
+                    markerById[r.id].openPopup();
+                }
+            });
+
+            resultsBody.appendChild(tr);
+        }
+
+        pageInfo.textContent = `Page ${currentPage} / ${totalPages}`;
+        document.getElementById("prevBtn").disabled = currentPage <= 1;
+        document.getElementById("nextBtn").disabled = currentPage >= totalPages;
+
+        updateSelectedRow();
+    }
+
+    function renderPoints() {
+        markersLayer.clearLayers();
+        markerById = {};
+
+        for (const r of allResults) {
+            if (
+                r.latitude === null || r.latitude === undefined ||
+                r.longitude === null || r.longitude === undefined
+            ) {
+                continue;
+            }
+
+            const marker = L.circleMarker(
+                [r.latitude, r.longitude],
+                {
+                    radius: 5,
+                    weight: 1,
+                    fillOpacity: 0.85
+                }
+            );
+
+            marker.bindPopup(`ID: ${formatValue(r.id)}`);
+
+            marker.on("click", () => {
+                renderDetails(r);
+            });
+
+            marker.addTo(markersLayer);
+            markerById[r.id] = marker;
+        }
+    }
+
+    async function loadRecords() {
+        hideStatus();
+
+        try {
+            const formData = new FormData(filterForm);
+
+            const res = await fetch("/page", {
+                method: "POST",
+                body: formData
+            });
+
+            if (!res.ok) {
+                const text = await res.text();
+                throw new Error(text || "Failed to load records.");
+            }
+
+            const data = await res.json();
+
+            if (!Array.isArray(data)) {
+                throw new Error("Response was not an array.");
+            }
+
+            allResults = data;
+            currentPage = 1;
+            selectedRecordId = null;
+
+            renderTable();
+            renderPoints();
+            clearDetailsPanel();
+
+            showStatus(`Loaded ${allResults.length} record(s).`, "success");
+        } catch (error) {
+            allResults = [];
+            currentPage = 1;
+            renderTable();
+            renderPoints();
+            clearDetailsPanel();
+            showStatus(error.message || "Failed to load records.", "error");
+        }
+    }
+
+    filterForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        await loadRecords();
+    });
+
+    document.getElementById("prevBtn").addEventListener("click", () => {
+        if (currentPage > 1) {
+            currentPage--;
+            renderTable();
+        }
+    });
+
+    document.getElementById("nextBtn").addEventListener("click", () => {
+        const totalPages = Math.ceil(allResults.length / PAGE_SIZE);
+        if (currentPage < totalPages) {
+            currentPage++;
+            renderTable();
+        }
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", () => {
+        allResults = [];
+        currentPage = 1;
+        selectedRecordId = null;
+        filterForm.reset();
+        markersLayer.clearLayers();
+        markerById = {};
+        renderTable();
+        clearDetailsPanel();
+        hideStatus();
+        updateInputsFromMap();
+    });
 
     renderTable();
-    renderPoints();
-});
-
-// ---------------- PAGINATION ----------------
-prevBtn.onclick = () => { currentPage--; renderTable(); };
-nextBtn.onclick = () => { currentPage++; renderTable(); };
-
-// ---------------- RESET ----------------
-resetBtn.onclick = () => {
-    allResults = [];
-    currentPage = 1;
-    renderTable();
-    markers.clearLayers();
-};
 </script>
-
 </body>
 </html>
