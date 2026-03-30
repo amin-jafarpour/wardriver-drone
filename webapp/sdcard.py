@@ -2,6 +2,7 @@ import psutil
 import os
 import streamlit as st
 import ap
+import server
 
 def get_partitions():
     partitions = [
@@ -53,6 +54,41 @@ def extraction():
                 continue
         st.session_state.record_list = record_list
 
+def add_record(obj):
+    record = server.Record(
+        date = obj.date,
+        time = obj.time,
+        latitude = obj.latitude,
+        longitude = obj.longitude,
+        altitude = obj.altitude,
+        speed = obj.speed,
+        bssid = obj.bssid,
+        primary_channel = obj.primary_channel,
+        second_channel = obj.second_channel,
+        rssi = obj.rssi,
+        authmode = obj.authmode,
+        pairwise_cipher = obj.pairwise_cipher,
+        group_cipher = obj.group_cipher,
+        ant = obj.ant,
+        country_code = obj.country_code,
+        country_start_channel = obj.country_start_channel,
+        country_end_channel = obj.country_end_channel,
+        max_tx_power = obj.max_tx_power,
+        country_policy = obj.country_policy,
+        wifi_AP_HE = obj.wifi_AP_HE,
+        bss_color = obj.bss_color,
+        partial_bss_color = obj.partial_bss_color,
+        bss_color_disabled = obj.bss_color_disabled,
+        bssid_index = obj.bssid_index,
+        bandwidth = obj.bandwidth,
+        vht_ch_freq1 = obj.vht_ch_freq1,
+        vht_ch_freq2 = obj.vht_ch_freq2,
+    )
+
+    db.session.add(record)
+    db.session.commit()
+    print('record added')
+
 
 def recording():
     if 'record_list' in st.session_state:
@@ -61,7 +97,11 @@ def recording():
         collection.filter_duplicates()
         filterd_records = collection.wifi_ap_records
         for record in filterd_records:
-            print(record.to_dict())
+            add_record(record)
+            
+
+
+
 
 
 def main():
