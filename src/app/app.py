@@ -234,7 +234,7 @@ def upload_file():
         filename =  werkzeug.utils.secure_filename(file.filename)
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(filepath)
-        populate(filepath)
+        populate_db(filepath)
         return f"File uploaded to {filepath}"
     return "Invalid file type"
 
