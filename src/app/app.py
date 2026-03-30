@@ -142,13 +142,13 @@ def index():
 
 @app.route("/page", methods=["POST"])
 def get_page():
-    min_alt = request.form.get('min_alt')
-    max_alt = request.form.get('max_alt')
-    min_lon = request.form.get('min_lon')
-    max_lon = request.form.get('max_lon')
+    min_lat = request.form.get('min_lat', type=float)
+    max_lat = request.form.get('max_lat', type=float)
+    min_lon = request.form.get('min_lon', type=float)
+    max_lon = request.form.get('max_lon', type=float)
 
     records = Record.query.filter(
-        Record.altitude.between(min_alt, max_alt),
+        Record.latitude.between(min_lat, max_lat),
         Record.longitude.between(min_lon, max_lon)
     ).all()
 
