@@ -369,7 +369,7 @@
     const maxLonInput = document.getElementById("max_lon");
 
     // ---------------- MAP ----------------
-    const map = L.map("map").setView([49.25, -123.1], 11);
+    const map = L.map("map").setView([49.25, -123.1], 11); // {maxZoom: 22, zoomSnap: 0.25}
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: "&copy; OpenStreetMap contributors"
