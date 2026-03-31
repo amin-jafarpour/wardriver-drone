@@ -517,7 +517,7 @@
                 <td>${formatValue(r.latitude)}</td>
                 <td>${formatValue(r.longitude)}</td>
                 <td class="mono">${formatValue(r.bssid)}</td>
-                <td>${formatValue(JSON.stringify(r))}</td>
+                <td class="mono">${formatValue(r.ssid)}</td>
             `;
 
             tr.addEventListener("click", () => {
