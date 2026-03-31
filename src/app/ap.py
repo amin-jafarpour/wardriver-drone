@@ -3,6 +3,7 @@ from datetime import datetime
 import csv
 import io
 import random
+import trilateration
 
 # https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/network/esp_wifi.html#_CPPv416wifi_ap_record_t
 
@@ -640,36 +641,61 @@ class WifiAPRecord():
                     
 class WifiAPRecordCollection:
     def __init__(self, wifi_ap_records):
-        self._wifi_ap_records = wifi_ap_records
+        self.wifi_ap_records = wifi_ap_records
+        self.bssid_set = {}
+
 
     def filter_invalid_gps_coords(self):
-        self._wifi_ap_records = [ap for ap in self._wifi_ap_records if ap.latitude != 0.0 and ap.longitude != 0.0]
+        self.wifi_ap_records = [ap for ap in self.wifi_ap_records if ap.latitude != 0.0 and ap.longitude != 0.0]
+
+    def filter_duplicates(self):
+        self.wifi_ap_records = list(set(self.wifi_ap_records))
+
+    def group_by_bssid(self):
+        bssid_set = {}
+        for ap1 in self.wifi_ap_records:
+            if ap1.bssid not in bssid_set:
+                records = [ap2 for ap2 in self.wifi_ap_records if ap1.bssid == ap2.bssid]
+                bssid_set[ap1.bssid] = records
+        print(len(bssid_set))
+        print(bssid_set)
+        self.bssid_set = bssid_set
+
+    def trilaterate(self):
+        new_wifi_ap_records = []
+        for bssid, lst in self.bssid_set.items():
+            record = lst[0]  
+            if len(lst) > 1:
+                val = trilateration.estimate_transmitter(lst)
+                record.latitude = val.latitude
+                record.longitude = val.longitude
+                record.rssi = val.rssi
+
+            new_wifi_ap_records.append(record)
+        self.wifi_ap_records = new_wifi_ap_records
 
     def speard_out(self):
         MIN_COORD_THRESHOLD = 0.0000010
-        for ap1 in self._wifi_ap_records:
-            for ap2 in self._wifi_ap_records:
+        for ap1 in self.wifi_ap_records:
+            for ap2 in self.wifi_ap_records:
                 if ap1 is not ap2:
                     if abs(ap1.latitude - ap2.latitude) < MIN_COORD_THRESHOLD:
                         ap2.latitude += MIN_COORD_THRESHOLD * random.choice([100, 150, 200]) * random.choice([1, -1])
                     if abs(ap1.longitude - ap2.longitude) < MIN_COORD_THRESHOLD:
                          ap2.longitude += MIN_COORD_THRESHOLD * random.choice([100, 150, 200]) * random.choice([1, -1])
 
-
-    def filter_duplicates(self):
-        self._wifi_ap_records = list(set(self._wifi_ap_records))
-
-    def trilaterate(self):
-        rssi_bssid = {}
-        for ap1 in self._wifi_ap_records:
-            if ap1.bssid not in rssi_bssid:
-                vals = [(ap2.rssi, ap2.latitude, ap2.longitude) for ap2 in self._wifi_ap_records if ap1.bssid == ap2.bssid]
-                rssi_bssid[ap1.bssid] = vals
-        print(rssi_bssid)
-        print("\n\n\n\n\n\n\n")
-
-
-
     @property
     def wifi_ap_records(self):
         return self._wifi_ap_records
+
+    @property
+    def bssid_set(self):
+        return self._bssid_set
+
+    @wifi_ap_records.setter
+    def wifi_ap_records(self, val):
+        self._wifi_ap_records = val
+
+    @bssid_set.setter
+    def bssid_set(self, val):
+        self._bssid_set = val
