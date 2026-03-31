@@ -33,6 +33,7 @@ class Record(db.Model):
     altitude = db.Column(db.Float, nullable=False)
     speed = db.Column(db.Float, nullable=False)
     bssid = db.Column(db.String(MAC_ADDR_STR_LEN), nullable=False)
+    ssid = db.Column(db.String(MAX_STR_LEN), nullable=True)
     # Optional fields
     primary_channel = db.Column(db.Integer, nullable=True)
     second_channel = db.Column(db.String(MAX_STR_LEN), nullable=True)
@@ -66,6 +67,7 @@ class Record(db.Model):
             'altitude': self.altitude, 
             'speed': self.speed, 
             'bssid':self.bssid, 
+            'ssid': self.ssid,
             # Optional fields
             'primary_channel': self.primary_channel, 
             'second_channel':self.second_channel, 
@@ -113,6 +115,7 @@ def populate_db(file_path):
             altitude=obj.altitude,
             speed=obj.speed,
             bssid=obj.bssid,
+            ssid=obj.ssid,
             primary_channel=obj.primary_channel,
             second_channel=obj.second_channel,
             rssi=obj.rssi,

@@ -324,10 +324,13 @@
             <thead>
                 <tr>
                     <th>ID</th>
+                    <th>Date</th>
+                    <th>Time</th>
                     <th>Lat</th>
                     <th>Lon</th>
-                    <th>Alt</th>
                     <th>BSSID</th>
+                    <th>SSID</th>
+
                 </tr>
             </thead>
             <tbody id="resultsBody">
@@ -343,6 +346,7 @@
             <button id="nextBtn" type="button" class="secondary">Next</button>
         </div>
     </div>
+    <button type="button" id="clearDbBtn" class="danger">Clear DB</button>
 </div>
 
 <script>
@@ -412,10 +416,10 @@
 
     function updateInputsFromMap() {
         const bounds = map.getBounds();
-        minLatInput.value = bounds.getSouth().toFixed(6);
-        maxLatInput.value = bounds.getNorth().toFixed(6);
-        minLonInput.value = bounds.getWest().toFixed(6);
-        maxLonInput.value = bounds.getEast().toFixed(6);
+        minLatInput.value = bounds.getSouth().toFixed(7);
+        maxLatInput.value = bounds.getNorth().toFixed(7);
+        minLonInput.value = bounds.getWest().toFixed(7);
+        maxLonInput.value = bounds.getEast().toFixed(7);
     }
 
     function updateMapFromInputs() {
@@ -428,7 +432,7 @@
             return;
         }
 
-        if (minLat >= maxLat || minLon >= maxLon) {
+        if (minLat > maxLat || minLon > maxLon) { // (minLat >= maxLat || minLon >= maxLon)
             return;
         }
 
@@ -508,10 +512,12 @@
             tr.dataset.recordId = r.id;
             tr.innerHTML = `
                 <td>${formatValue(r.id)}</td>
+                <td>${formatValue(r.date)}</td>
+                <td>${formatValue(r.time)}</td>
                 <td>${formatValue(r.latitude)}</td>
                 <td>${formatValue(r.longitude)}</td>
-                <td>${formatValue(r.altitude)}</td>
                 <td class="mono">${formatValue(r.bssid)}</td>
+                <td>${formatValue(JSON.stringify(r))}</td>
             `;
 
             tr.addEventListener("click", () => {
@@ -640,6 +646,36 @@
     });
 
     renderTable();
+
+    document.getElementById("clearDbBtn").addEventListener("click", async () => {
+        const confirmed = confirm("Are you sure you want to clear the database?");
+        if (!confirmed) return;
+
+        try {
+            const res = await fetch("/cleardb", {
+                method: "DELETE"
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.message || "Failed to clear database.");
+            }
+
+            allResults = [];
+            currentPage = 1;
+            selectedRecordId = null;
+
+            markersLayer.clearLayers();
+            markerById = {};
+
+            renderTable();
+            clearDetailsPanel();
+            showStatus(data.message || "Database cleared.", "success");
+        } catch (error) {
+            showStatus(error.message || "Failed to clear database.", "error");
+        }
+    });
 </script>
 </body>
 </html>
