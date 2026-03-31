@@ -647,14 +647,13 @@ class WifiAPRecordCollection:
 
     def speard_out(self):
         MIN_COORD_THRESHOLD = 0.0000010
-        FACTOR = 5
         for ap1 in self._wifi_ap_records:
             for ap2 in self._wifi_ap_records:
                 if ap1 is not ap2:
                     if abs(ap1.latitude - ap2.latitude) < MIN_COORD_THRESHOLD:
-                        ap2.latitude += MIN_COORD_THRESHOLD * FACTOR * random.choice([1, -1])
+                        ap2.latitude += MIN_COORD_THRESHOLD * random.choice([2, 3, 5]) * random.choice([1, -1])
                     if abs(ap1.longitude - ap2.longitude) < MIN_COORD_THRESHOLD:
-                         ap2.longitude += MIN_COORD_THRESHOLD * FACTOR * random.choice([1, -1])
+                         ap2.longitude += MIN_COORD_THRESHOLD * random.choice([2, 3, 5]) * random.choice([1, -1])
 
     def filter_duplicates(self):
         self._wifi_ap_records = list(set(self._wifi_ap_records))
