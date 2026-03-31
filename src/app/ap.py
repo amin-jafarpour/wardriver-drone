@@ -677,15 +677,43 @@ class WifiAPRecordCollection:
                 new_wifi_ap_records.append(record)
         self.wifi_ap_records = new_wifi_ap_records
 
+
+
     def speard_out(self):
         MIN_COORD_THRESHOLD = 0.0000010
+        lat_factor = 0
+        long_factor = 0
         for ap1 in self.wifi_ap_records:
             for ap2 in self.wifi_ap_records:
                 if ap1 is not ap2:
                     if abs(ap1.latitude - ap2.latitude) < MIN_COORD_THRESHOLD:
-                        ap2.latitude += MIN_COORD_THRESHOLD * random.choice([1, 2, 3]) * random.choice([1, -1])
+                        lat_factor += 1
                     if abs(ap1.longitude - ap2.longitude) < MIN_COORD_THRESHOLD:
-                         ap2.longitude += MIN_COORD_THRESHOLD * random.choice([1, 2, 3]) * random.choice([1, -1])
+                        long_factor += 1
+
+            for ap2 in self.wifi_ap_records:
+                if ap1 is not ap2:
+                    if abs(ap1.latitude - ap2.latitude) < MIN_COORD_THRESHOLD:
+                        ap2.latitude += MIN_COORD_THRESHOLD * random.choice([1, -1]) * lat_factor
+                    if abs(ap1.longitude - ap2.longitude) < MIN_COORD_THRESHOLD:
+                        ap2.longitude += MIN_COORD_THRESHOLD * random.choice([1, -1]) * long_factor
+
+            lat_factor = 0
+            long_factor = 0
+
+
+
+
+
+    # def speard_out(self):
+    #     MIN_COORD_THRESHOLD = 0.0000010
+    #     for ap1 in self.wifi_ap_records:
+    #         for ap2 in self.wifi_ap_records:
+    #             if ap1 is not ap2:
+    #                 if abs(ap1.latitude - ap2.latitude) < MIN_COORD_THRESHOLD:
+    #                     ap2.latitude += MIN_COORD_THRESHOLD * random.choice([1, 2, 3]) * random.choice([1, -1])
+    #                 if abs(ap1.longitude - ap2.longitude) < MIN_COORD_THRESHOLD:
+    #                      ap2.longitude += MIN_COORD_THRESHOLD * random.choice([1, 2, 3]) * random.choice([1, -1])
 
     @property
     def wifi_ap_records(self):
