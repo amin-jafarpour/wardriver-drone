@@ -463,17 +463,62 @@
         detailsList.innerHTML = "";
         detailsPlaceholder.style.display = "none";
 
-        const entries = Object.entries(record);
-
-        for (const [key, value] of entries) {
+        // const entries = Object.entries(record);
+        
+        createRow = key=>
+        {
             const row = document.createElement("div");
             row.className = "detail-row";
             row.innerHTML = `
-                <div class="detail-key">${formatLabel(key)}</div>
-                <div class="detail-value">${formatValue(value)}</div>
-            `;
+                    <div class="detail-key">${formatLabel(key)}</div>
+                    <div class="detail-value">${formatValue(record[key])}</div>
+                `;
             detailsList.appendChild(row);
-        }
+        }   
+
+        createRow('id');
+        createRow('date');
+        createRow('time');
+        createRow('latitude');
+        createRow('longitude');
+        createRow('altitude');
+        createRow('speed');
+        createRow('bssid');
+        createRow('ssid');
+        createRow('primary_channel');
+        createRow('second_channel');
+        createRow('rssi');
+        createRow('authmode');
+        createRow('pairwise_cipher');
+        createRow('group_cipher');
+        createRow('ant');
+        createRow('country_code');
+        createRow('country_start_channel');
+        createRow('country_end_channel');
+        createRow('max_tx_power');
+        createRow('country_policy');
+        createRow('wifi_AP_HE');
+        createRow('bss_color');
+        createRow('partial_bss_color');
+        createRow('bss_color_disabled');
+        createRow('bssid_index');
+        createRow('bandwidth');
+        createRow('vht_ch_freq1');
+        createRow('vht_ch_freq2');
+
+
+
+
+
+        // for (const [key, value] of entries) {
+        //     const row = document.createElement("div");
+        //     row.className = "detail-row";
+        //     row.innerHTML = `
+        //         <div class="detail-key">${formatLabel(key)}</div>
+        //         <div class="detail-value">${formatValue(value)}</div>
+        //     `;
+        //     detailsList.appendChild(row);
+        // }
 
         updateSelectedRow();
     }
