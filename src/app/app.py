@@ -105,7 +105,8 @@ def populate_db(file_path):
         collection = ap.WifiAPRecordCollection(record_list)
         collection.filter_invalid_gps_coords()
         collection.filter_duplicates()
-        # collection.trilaterate()
+        collection.group_by_bssid()
+        collection.trilaterate()
         collection.speard_out()
         filterd_records = collection.wifi_ap_records
         for obj in filterd_records:

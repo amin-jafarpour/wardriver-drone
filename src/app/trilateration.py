@@ -74,12 +74,11 @@ def estimate_transmitter(records, A=-45.0, n=2.7, max_iter=200, lr=0.1):
         lat, lon = xy_to_latlon(tx, ty)
 
         return {
-            "lat": lat,
-            "lon": lon,
-            "mean_rssi": mean_rssi,
+            "latitude": lat, 
+            "longitude": lon,
+            "rssi": mean_rssi,
             "num_points": len(records),
         }
-
     # ------------------------------------------------------------
     # CASE 2: N ≥ 3 → gradient descent trilateration
     # ------------------------------------------------------------
@@ -111,8 +110,8 @@ def estimate_transmitter(records, A=-45.0, n=2.7, max_iter=200, lr=0.1):
     lat, lon = xy_to_latlon(tx, ty)
 
     return {
-        "lat": lat,
-        "lon": lon,
-        "mean_rssi": mean_rssi,
+        "latitude": lat, 
+        "longitude": lon,
+        "rssi": mean_rssi,
         "num_points": len(records),
     }
