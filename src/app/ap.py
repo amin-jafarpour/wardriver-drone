@@ -2,6 +2,7 @@ from enum import Enum
 from datetime import datetime
 import csv
 import io
+import random
 
 # https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/network/esp_wifi.html#_CPPv416wifi_ap_record_t
 
@@ -644,11 +645,19 @@ class WifiAPRecordCollection:
     def filter_invalid_gps_coords(self):
         self._wifi_ap_records = [ap for ap in self._wifi_ap_records if ap.latitude != 0.0 and ap.longitude != 0.0]
 
+    def speard_out(self):
+        MIN_COORD_THRESHOLD = 0.0000010
+        FACTOR = 5
+        for ap1 in self._wifi_ap_records:
+            for ap2 in self._wifi_ap_records:
+                if ap1 is not ap2:
+                    if abs(ap1.latitude - ap2.latitude) < MIN_COORD_THRESHOLD:
+                        ap2.latitude += MIN_COORD_THRESHOLD * FACTOR * random.choice([1, -1])
+                    if abs(ap1.longitude - ap2.longitude) < MIN_COORD_THRESHOLD:
+                         ap2.longitude += MIN_COORD_THRESHOLD * FACTOR * random.choice([1, -1])
+
     def filter_duplicates(self):
         self._wifi_ap_records = list(set(self._wifi_ap_records))
-
-    def speard_out(self):
-        pass
 
     @property
     def wifi_ap_records(self):
