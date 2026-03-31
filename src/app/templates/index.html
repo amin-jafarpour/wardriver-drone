@@ -369,10 +369,21 @@
     const maxLonInput = document.getElementById("max_lon");
 
     // ---------------- MAP ----------------
-    const map = L.map("map").setView([49.25, -123.1], 11); // {maxZoom: 22, zoomSnap: 0.25}
+    // const map = L.map("map").setView([49.25, -123.1], 11);
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: "&copy; OpenStreetMap contributors"
+    const maxZoom = 20;
+
+    const map = L.map("map", {
+        maxZoom: maxZoom,   // maximum zoom level
+        minZoom: 5     // optional
+    }).setView([49.25, -123.1], 11);
+
+    // L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    //     attribution: "&copy; OpenStreetMap contributors"
+    // }).addTo(map);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: maxZoom + 1  // must be >= map maxZoom
     }).addTo(map);
 
     const markersLayer = L.layerGroup().addTo(map);
