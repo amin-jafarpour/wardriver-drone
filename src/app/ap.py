@@ -655,8 +655,20 @@ class WifiAPRecordCollection:
                     if abs(ap1.longitude - ap2.longitude) < MIN_COORD_THRESHOLD:
                          ap2.longitude += MIN_COORD_THRESHOLD * random.choice([100, 150, 200]) * random.choice([1, -1])
 
+
     def filter_duplicates(self):
         self._wifi_ap_records = list(set(self._wifi_ap_records))
+
+    def trilaterate(self):
+        rssi_bssid = {}
+        for ap1 in self._wifi_ap_records:
+            if ap1.bssid not in rssi_bssid:
+                vals = [(ap2.rssi, ap2.latitude, ap2.longitude) for ap2 in self._wifi_ap_records if ap1.bssid == ap2.bssid]
+                rssi_bssid[ap1.bssid] = vals
+        print(rssi_bssid)
+        print("\n\n\n\n\n\n\n")
+
+
 
     @property
     def wifi_ap_records(self):
