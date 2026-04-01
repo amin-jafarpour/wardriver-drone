@@ -133,14 +133,15 @@
 
         .map-layout {
             display: grid;
-            grid-template-columns: minmax(0, 2fr) minmax(320px, 420px);
+            /* grid-template-columns: minmax(0, 2fr) minmax(320px, 420px); */
+            grid-template-columns: minmax(0, 1.2fr) minmax(500px, 1.8fr);
             gap: 16px;
             margin-top: 16px;
             align-items: start;
         }
 
         #map {
-            height: 850px; /*520px*/
+            height: 550px;
             border-radius: 12px;
             overflow: hidden;
             border: 1px solid #e5e7eb;
@@ -190,7 +191,7 @@
         }
 
         .detail-value {
-            font-size: 9;
+            font-size: 9px;
             word-break: break-word;
         }
 
