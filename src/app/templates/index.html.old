@@ -19,13 +19,13 @@
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 24px;
+            padding: 24px; 
             background: #f5f7fb;
             color: #222;
         }
 
         .container {
-            max-width: 1500px;
+            max-width: 1500px; 
             margin: 0 auto;
         }
 
@@ -52,17 +52,10 @@
             text-decoration: underline;
         }
 
-        .header-links {
-            display: flex;
-            gap: 14px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
         .card {
             background: white;
             border-radius: 12px;
-            padding: 18px;
+            padding: 18px; 
             margin-bottom: 20px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.08);
         }
@@ -156,8 +149,8 @@
         .side-panel {
             min-height: 520px;
             border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 16px;
+            border-radius: 12px; 
+            padding: 16px; 
             background: #fafafa;
             overflow-y: auto;
         }
@@ -176,7 +169,7 @@
         .detail-list {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr 1fr;
-            gap: 10px;
+            gap: 10px; 
             margin-top: 14px;
         }
 
@@ -188,7 +181,7 @@
         }
 
         .detail-key {
-            font-size: 10px;
+            font-size: 10px; 
             font-weight: 700;
             color: #000000;
             text-transform: uppercase;
@@ -207,7 +200,6 @@
             justify-content: space-between;
             gap: 12px;
             flex-wrap: wrap;
-            margin-top: 18px;
         }
 
         .small {
@@ -269,16 +261,6 @@
             #map {
                 height: 420px;
             }
-
-            .detail-list {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-
-        @media (max-width: 650px) {
-            .detail-list {
-                grid-template-columns: 1fr;
-            }
         }
     </style>
 </head>
@@ -286,12 +268,9 @@
 <div class="container">
     <div class="page-header">
         <h1>Wardriving Records Viewer</h1>
-
-        <div class="header-links">
-            <a href="/upload">Upload CSV AP Records</a>
-            <a href="/uploadpath">Upload Flight Path Coordinates</a>
-            <button type="button" id="clearDbBtn" class="danger">Clear DB</button>
-        </div>
+        <a href="/upload">Upload CSV AP Records</a>
+         <a href="/uploadpath">Upload Flight Path Coordinates</a>
+        <button type="button" id="clearDbBtn" class="danger">Clear DB</button>
     </div>
 
     <div class="card">
@@ -318,8 +297,7 @@
             </div>
 
             <div class="actions">
-                <button type="submit" id="loadApsBtn">Load APs</button>
-                <button type="button" id="loadFlightPathBtn">Load Flight Path</button>
+                <button type="submit">Load APs</button>
                 <button type="button" id="resetBtn" class="secondary">Reset</button>
             </div>
         </form>
@@ -338,7 +316,7 @@
             </aside>
         </div>
 
-        <div class="results-header">
+                <div class="results-header">
             <h2 style="margin: 0;">Results</h2>
             <div class="small">Click a row to focus the corresponding record details.</div>
         </div>
@@ -353,11 +331,12 @@
                     <th>Lon</th>
                     <th>BSSID</th>
                     <th>SSID</th>
+
                 </tr>
             </thead>
             <tbody id="resultsBody">
                 <tr>
-                    <td colspan="7">No data loaded.</td>
+                    <td colspan="5">No data loaded.</td>
                 </tr>
             </tbody>
         </table>
@@ -368,11 +347,11 @@
             <button id="nextBtn" type="button" class="secondary">Next</button>
         </div>
     </div>
+    </div>
 </div>
 
 <script>
     const PAGE_SIZE = 10;
-
     let allResults = [];
     let currentPage = 1;
     let selectedRecordId = null;
@@ -394,17 +373,15 @@
     const maxZoom = 24;
 
     const map = L.map("map", {
-        maxZoom: maxZoom,
-        minZoom: 5
-    }).setView([49.25, -123.1], 11);
+        maxZoom: maxZoom,   // maximum zoom level
+        minZoom: 5     // optional
+    }).setView([49.25, -123.1], 11); 
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: maxZoom + 1
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: maxZoom + 1  // must be >= map maxZoom
     }).addTo(map);
 
-    // Separate layers so AP markers are not removed when the flight path is drawn
     const markersLayer = L.layerGroup().addTo(map);
-    const flightPathLayer = L.layerGroup().addTo(map);
 
     function showStatus(message, type = "info") {
         filterStatus.textContent = message;
@@ -414,6 +391,14 @@
 
     function hideStatus() {
         filterStatus.style.display = "none";
+    }
+
+    function formatNumber(value) {
+        const num = Number(value);
+        if (Number.isNaN(num)) {
+            return value;
+        }
+        return num.toFixed(6);
     }
 
     function formatLabel(key) {
@@ -435,14 +420,6 @@
         return String(value);
     }
 
-    function formatCoordValue(value) {
-        const num = Number(value);
-        if (Number.isNaN(num)) {
-            return String(value);
-        }
-        return num.toFixed(6);
-    }
-
     function updateInputsFromMap() {
         const bounds = map.getBounds();
         minLatInput.value = bounds.getSouth().toFixed(7);
@@ -461,7 +438,7 @@
             return;
         }
 
-        if (minLat > maxLat || minLon > maxLon) {
+        if (minLat > maxLat || minLon > maxLon) { 
             return;
         }
 
@@ -491,47 +468,48 @@
         selectedRecordId = record.id;
         detailsList.innerHTML = "";
         detailsPlaceholder.style.display = "none";
-
-        const createRow = (key) => {
+        
+        createRow = key=>
+        {
             const row = document.createElement("div");
             row.className = "detail-row";
             row.innerHTML = `
-                <div class="detail-key">${formatLabel(key)}</div>
-                <div class="detail-value">${formatValue(record[key])}</div>
-            `;
+                    <div class="detail-key">${formatLabel(key)}</div>
+                    <div class="detail-value">${formatValue(record[key])}</div>
+                `;
             detailsList.appendChild(row);
-        };
+        }   
 
-        createRow("id");
-        createRow("date");
-        createRow("time");
-        createRow("latitude");
-        createRow("longitude");
-        createRow("altitude");
-        createRow("speed");
-        createRow("bssid");
-        createRow("ssid");
-        createRow("primary_channel");
-        createRow("second_channel");
-        createRow("rssi");
-        createRow("authmode");
-        createRow("pairwise_cipher");
-        createRow("group_cipher");
-        createRow("ant");
-        createRow("country_code");
-        createRow("country_start_channel");
-        createRow("country_end_channel");
-        createRow("max_tx_power");
-        createRow("country_policy");
-        createRow("wifi_AP_HE");
-        createRow("bss_color");
-        createRow("partial_bss_color");
-        createRow("bss_color_disabled");
-        createRow("bssid_index");
-        createRow("bandwidth");
-        createRow("vht_ch_freq1");
-        createRow("vht_ch_freq2");
-
+        createRow('id');
+        createRow('date');
+        createRow('time');
+        createRow('latitude');
+        createRow('longitude');
+        createRow('altitude');
+        createRow('speed');
+        createRow('bssid');
+        createRow('ssid');
+        createRow('primary_channel');
+        createRow('second_channel');
+        createRow('rssi');
+        createRow('authmode');
+        createRow('pairwise_cipher');
+        createRow('group_cipher');
+        createRow('ant');
+        createRow('country_code');
+        createRow('country_start_channel');
+        createRow('country_end_channel');
+        createRow('max_tx_power');
+        createRow('country_policy');
+        createRow('wifi_AP_HE');
+        createRow('bss_color');
+        createRow('partial_bss_color');
+        createRow('bss_color_disabled');
+        createRow('bssid_index');
+        createRow('bandwidth');
+        createRow('vht_ch_freq1');
+        createRow('vht_ch_freq2');
+        
         updateSelectedRow();
     }
 
@@ -550,7 +528,7 @@
         resultsBody.innerHTML = "";
 
         if (!allResults.length) {
-            resultsBody.innerHTML = "<tr><td colspan='7'>No data loaded.</td></tr>";
+            resultsBody.innerHTML = "<tr><td colspan='5'>No data</td></tr>";
             pageInfo.textContent = "Page 0 / 0";
             document.getElementById("prevBtn").disabled = true;
             document.getElementById("nextBtn").disabled = true;
@@ -628,86 +606,6 @@
         }
     }
 
-    function getRecordTimestamp(record) {
-        const datePart = record.date ? String(record.date).trim() : "";
-        const timePart = record.time ? String(record.time).trim() : "";
-
-        if (!datePart && !timePart) {
-            return 0;
-        }
-
-        const normalized = `${datePart}T${timePart || "00:00:00"}`;
-        const ts = Date.parse(normalized);
-        return Number.isNaN(ts) ? 0 : ts;
-    }
-
-    function renderFlightPath(coords) {
-        // Clear ONLY the path layer, not AP markers
-        flightPathLayer.clearLayers();
-
-        const filteredCoords = coords.filter(c =>
-            c.latitude !== null &&
-            c.latitude !== undefined &&
-            c.longitude !== null &&
-            c.longitude !== undefined
-        );
-
-        if (filteredCoords.length < 2) {
-            return;
-        }
-
-        filteredCoords.sort((a, b) => getRecordTimestamp(a) - getRecordTimestamp(b));
-
-        const latlngs = filteredCoords.map(c => [c.latitude, c.longitude]);
-
-        const pathLine = L.polyline(latlngs, {
-            color: "red",
-            weight: 3,
-            opacity: 0.85
-        });
-
-        pathLine.addTo(flightPathLayer);
-
-        const firstCoord = filteredCoords[0];
-        const lastCoord = filteredCoords[filteredCoords.length - 1];
-
-        const firstLatLng = [firstCoord.latitude, firstCoord.longitude];
-        const lastLatLng = [lastCoord.latitude, lastCoord.longitude];
-
-        const firstMarker = L.circleMarker(firstLatLng, {
-            radius: 6,
-            weight: 2,
-            color: "red",
-            fillColor: "white",
-            fillOpacity: 1
-        }).bindTooltip(
-            `Start: ${formatCoordValue(firstCoord.latitude)}, ${formatCoordValue(firstCoord.longitude)}`,
-            {
-                permanent: true,
-                direction: "top",
-                offset: [0, -8]
-            }
-        );
-
-        const lastMarker = L.circleMarker(lastLatLng, {
-            radius: 6,
-            weight: 2,
-            color: "red",
-            fillColor: "white",
-            fillOpacity: 1
-        }).bindTooltip(
-            `End: ${formatCoordValue(lastCoord.latitude)}, ${formatCoordValue(lastCoord.longitude)}`,
-            {
-                permanent: true,
-                direction: "top",
-                offset: [0, -8]
-            }
-        );
-
-        firstMarker.addTo(flightPathLayer);
-        lastMarker.addTo(flightPathLayer);
-    }
-
     async function loadRecords() {
         hideStatus();
 
@@ -721,13 +619,13 @@
 
             if (!res.ok) {
                 const text = await res.text();
-                throw new Error(text || "Failed to load AP records.");
+                throw new Error(text || "Failed to load records.");
             }
 
             const data = await res.json();
 
             if (!Array.isArray(data)) {
-                throw new Error("AP response was not an array.");
+                throw new Error("Response was not an array.");
             }
 
             allResults = data;
@@ -738,59 +636,20 @@
             renderPoints();
             clearDetailsPanel();
 
-            showStatus(`Loaded ${allResults.length} AP record(s).`, "success");
+            showStatus(`Loaded ${allResults.length} record(s).`, "success");
         } catch (error) {
             allResults = [];
             currentPage = 1;
             renderTable();
             renderPoints();
             clearDetailsPanel();
-            showStatus(error.message || "Failed to load AP records.", "error");
-        }
-    }
-
-    async function loadFlightPath() {
-        hideStatus();
-
-        try {
-            const formData = new FormData(filterForm);
-
-            const res = await fetch("/path", {
-                method: "POST",
-                body: formData
-            });
-
-            if (!res.ok) {
-                const text = await res.text();
-                throw new Error(text || "Failed to load flight path.");
-            }
-
-            const data = await res.json();
-
-            if (!Array.isArray(data)) {
-                throw new Error("Flight path response was not an array.");
-            }
-
-            renderFlightPath(data);
-
-            if (data.length < 2) {
-                showStatus(`Loaded ${data.length} flight coordinate(s). Need at least 2 to draw a line.`, "info");
-            } else {
-                showStatus(`Loaded flight path using ${data.length} coordinate(s).`, "success");
-            }
-        } catch (error) {
-            flightPathLayer.clearLayers();
-            showStatus(error.message || "Failed to load flight path.", "error");
+            showStatus(error.message || "Failed to load records.", "error");
         }
     }
 
     filterForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         await loadRecords();
-    });
-
-    document.getElementById("loadFlightPathBtn").addEventListener("click", async () => {
-        await loadFlightPath();
     });
 
     document.getElementById("prevBtn").addEventListener("click", () => {
@@ -812,17 +671,16 @@
         allResults = [];
         currentPage = 1;
         selectedRecordId = null;
-
         filterForm.reset();
         markersLayer.clearLayers();
-        flightPathLayer.clearLayers();
         markerById = {};
-
         renderTable();
         clearDetailsPanel();
         hideStatus();
         updateInputsFromMap();
     });
+
+    renderTable();
 
     document.getElementById("clearDbBtn").addEventListener("click", async () => {
         const confirmed = confirm("Are you sure you want to clear the database?");
@@ -844,7 +702,6 @@
             selectedRecordId = null;
 
             markersLayer.clearLayers();
-            flightPathLayer.clearLayers();
             markerById = {};
 
             renderTable();
@@ -854,8 +711,6 @@
             showStatus(error.message || "Failed to clear database.", "error");
         }
     });
-
-    renderTable();
 </script>
 </body>
 </html>

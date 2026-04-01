@@ -185,6 +185,21 @@ def populate_record_db(file_path):
 def index():
     return render_template('index.html')
 
+
+@app.route("/path", methods=["POST"])
+def get_path():
+    min_lat = request.form.get('min_lat', type=float)
+    max_lat = request.form.get('max_lat', type=float)
+    min_lon = request.form.get('min_lon', type=float)
+    max_lon = request.form.get('max_lon', type=float)
+
+    coords = PathCoord.query.filter(
+        PathCoord.latitude.between(min_lat, max_lat),
+        PathCoord.longitude.between(min_lon, max_lon)
+    ).all()
+
+    return jsonify([coord.to_dict() for coord in coords]), 200
+
 @app.route("/page", methods=["POST"])
 def get_page():
     min_lat = request.form.get('min_lat', type=float)
