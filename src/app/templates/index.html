@@ -19,13 +19,13 @@
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 24px;
+            padding: 24px; 
             background: #f5f7fb;
             color: #222;
         }
 
         .container {
-            max-width: 1500px;
+            max-width: 1500px; 
             margin: 0 auto;
         }
 
@@ -55,7 +55,7 @@
         .card {
             background: white;
             border-radius: 12px;
-            padding: 18px;
+            padding: 18px; 
             margin-bottom: 20px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.08);
         }
@@ -140,7 +140,7 @@
         }
 
         #map {
-            height: 520px;
+            height: 850px; /*520px*/
             border-radius: 12px;
             overflow: hidden;
             border: 1px solid #e5e7eb;
@@ -149,8 +149,8 @@
         .side-panel {
             min-height: 520px;
             border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 16px;
+            border-radius: 12px; 
+            padding: 16px; 
             background: #fafafa;
             overflow-y: auto;
         }
@@ -168,7 +168,8 @@
 
         .detail-list {
             display: grid;
-            gap: 10px;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 10px; 
             margin-top: 14px;
         }
 
@@ -180,16 +181,16 @@
         }
 
         .detail-key {
-            font-size: 12px;
+            font-size: 10px; 
             font-weight: 700;
-            color: #666;
+            color: #000000;
             text-transform: uppercase;
             letter-spacing: 0.04em;
             margin-bottom: 4px;
         }
 
         .detail-value {
-            font-size: 14px;
+            font-size: 9;
             word-break: break-word;
         }
 
@@ -269,52 +270,7 @@
         <h1>Wardriving Records Viewer</h1>
         <a href="/upload">Upload CSV</a>
     </div>
-
-    <div class="card">
-        <h2>Map Filter (Bounding Box)</h2>
-
-        <form id="filterForm">
-            <div class="grid">
-                <div>
-                    <label for="min_lat">Min Latitude</label>
-                    <input type="number" step="any" id="min_lat" name="min_lat" placeholder="Min Lat">
-                </div>
-                <div>
-                    <label for="max_lat">Max Latitude</label>
-                    <input type="number" step="any" id="max_lat" name="max_lat" placeholder="Max Lat">
-                </div>
-                <div>
-                    <label for="min_lon">Min Longitude</label>
-                    <input type="number" step="any" id="min_lon" name="min_lon" placeholder="Min Lon">
-                </div>
-                <div>
-                    <label for="max_lon">Max Longitude</label>
-                    <input type="number" step="any" id="max_lon" name="max_lon" placeholder="Max Lon">
-                </div>
-            </div>
-
-            <div class="actions">
-                <button type="submit">Load</button>
-                <button type="button" id="resetBtn" class="secondary">Reset</button>
-            </div>
-        </form>
-
-        <div class="map-layout">
-            <div id="map"></div>
-
-            <aside class="side-panel" id="detailsPanel">
-                <h3>Selected Point Details</h3>
-                <div class="panel-note" id="detailsPlaceholder">
-                    Click a dot on the map or a row in the table to see all fields for that record here.
-                </div>
-                <div class="detail-list" id="detailsList"></div>
-            </aside>
-        </div>
-
-        <div id="filterStatus" class="status"></div>
-    </div>
-
-    <div class="card">
+        <div class="card">
         <div class="results-header">
             <h2 style="margin: 0;">Results</h2>
             <div class="small">Click a row to focus the corresponding record details.</div>
@@ -346,7 +302,51 @@
             <button id="nextBtn" type="button" class="secondary">Next</button>
         </div>
     </div>
-    <button type="button" id="clearDbBtn" class="danger">Clear DB</button>
+
+    <div class="card">
+        <h2>Map Filter (Bounding Box)</h2>
+
+        <form id="filterForm">
+            <div class="grid">
+                <div>
+                    <label for="min_lat">Min Latitude</label>
+                    <input type="number" step="any" id="min_lat" name="min_lat" placeholder="Min Lat">
+                </div>
+                <div>
+                    <label for="max_lat">Max Latitude</label>
+                    <input type="number" step="any" id="max_lat" name="max_lat" placeholder="Max Lat">
+                </div>
+                <div>
+                    <label for="min_lon">Min Longitude</label>
+                    <input type="number" step="any" id="min_lon" name="min_lon" placeholder="Min Lon">
+                </div>
+                <div>
+                    <label for="max_lon">Max Longitude</label>
+                    <input type="number" step="any" id="max_lon" name="max_lon" placeholder="Max Lon">
+                </div>
+            </div>
+
+            <div class="actions">
+                <button type="submit">Load</button>
+                <button type="button" id="resetBtn" class="secondary">Reset</button>
+                <button type="button" id="clearDbBtn" class="danger">Clear DB</button>
+            </div>
+        </form>
+
+        <div id="filterStatus" class="status"></div>
+
+        <div class="map-layout">
+            <div id="map"></div>
+
+            <aside class="side-panel" id="detailsPanel">
+                <h3>Selected Point Details</h3>
+                <div class="panel-note" id="detailsPlaceholder">
+                    Click a dot on the map or a row in the table to see all fields for that record here.
+                </div>
+                <div class="detail-list" id="detailsList"></div>
+            </aside>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -369,18 +369,12 @@
     const maxLonInput = document.getElementById("max_lon");
 
     // ---------------- MAP ----------------
-    // const map = L.map("map").setView([49.25, -123.1], 11);
-
     const maxZoom = 24;
 
     const map = L.map("map", {
         maxZoom: maxZoom,   // maximum zoom level
         minZoom: 5     // optional
     }).setView([49.25, -123.1], 11);
-
-    // L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    //     attribution: "&copy; OpenStreetMap contributors"
-    // }).addTo(map);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: maxZoom + 1  // must be >= map maxZoom
@@ -443,7 +437,7 @@
             return;
         }
 
-        if (minLat > maxLat || minLon > maxLon) { // (minLat >= maxLat || minLon >= maxLon)
+        if (minLat > maxLat || minLon > maxLon) { 
             return;
         }
 
@@ -473,8 +467,6 @@
         selectedRecordId = record.id;
         detailsList.innerHTML = "";
         detailsPlaceholder.style.display = "none";
-
-        // const entries = Object.entries(record);
         
         createRow = key=>
         {
@@ -516,21 +508,7 @@
         createRow('bandwidth');
         createRow('vht_ch_freq1');
         createRow('vht_ch_freq2');
-
-
-
-
-
-        // for (const [key, value] of entries) {
-        //     const row = document.createElement("div");
-        //     row.className = "detail-row";
-        //     row.innerHTML = `
-        //         <div class="detail-key">${formatLabel(key)}</div>
-        //         <div class="detail-value">${formatValue(value)}</div>
-        //     `;
-        //     detailsList.appendChild(row);
-        // }
-
+        
         updateSelectedRow();
     }
 
