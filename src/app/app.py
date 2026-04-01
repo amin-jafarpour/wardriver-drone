@@ -19,6 +19,26 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
+class PathCoord(db.Model):
+    __tablename__ = "pathcoord"
+
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    date = db.Column(db.Date, nullable=False)
+    time = db.Column(db.Time, nullable=False)
+    latitude = db.Column(db.Float, nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
+    altitude = db.Column(db.Float, nullable=False)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'date': self.date.isoformat() if self.date else None, # YYYY-MM-DD
+            'time': self.time.isoformat() if self.time else None, # HH:MM:SS
+            'latitude': self.latitude, 
+            'longitude': self.longitude, 
+            'altitude': self.altitude,  
+        }
+
 class Record(db.Model):
     __tablename__ = "records"
     MAX_STR_LEN = 50
@@ -60,8 +80,8 @@ class Record(db.Model):
         return {
             # Required fields
             'id': self.id,
-            'date': self.date.isoformat() if self.date else None,   # YYYY-MM-DD
-            'time': self.time.isoformat() if self.time else None,   # HH:MM:SS
+            'date': self.date.isoformat() if self.date else None, # YYYY-MM-DD
+            'time': self.time.isoformat() if self.time else None, # HH:MM:SS
             'latitude': self.latitude, 
             'longitude': self.longitude, 
             'altitude': self.altitude, 
@@ -91,7 +111,29 @@ class Record(db.Model):
             'vht_ch_freq2': self.vht_ch_freq2, 
         }
 
-def populate_db(file_path):
+def populate_pathcoord_db(file_path):
+    print('populate_pathcoord_db')
+    # with open(file_path, 'r') as file:
+    #     content = file.read()
+    #     pathcoord_str_list = .readCSV(content)
+    #     pathcoord_list = []
+    #     for pathcoord_str in pathcoord_str_list:
+    #         try:
+    #             pathcoord = .parse_obj(pathcoord_str)
+    #             pathcoord_list.append(pathcoord)
+    #         except Exception as e:    
+    #                 continue
+    #     for obj in pathcoord_list:
+    #         record = Record(
+    #         date=obj.date,
+    #         time=obj.time,
+    #         latitude=obj.latitude,
+    #         longitude=obj.longitude,
+    #         altitude=obj.altitude)
+    #         db.session.add(record)
+    #         db.session.commit()
+
+def populate_record_db(file_path):
     with open(file_path, 'r') as file:
         content = file.read()
         ap_str_list = ap.WifiAPRecord.readCSV(content)
@@ -142,6 +184,7 @@ def populate_db(file_path):
             db.session.add(record)
             db.session.commit()
 
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -179,9 +222,35 @@ def remove_record(record_id):
     db.session.commit()
     return jsonify({"message": "Deleted"}), 200
 
+@app.route('/uploadpath')
+def uploadpath():
+    return render_template('uploadpath.html')
+
 @app.route('/upload')
 def upload():
     return render_template('upload.html')
+
+
+@app.route('/uploadpath', methods=['POST'])
+def uploadpath_file():
+    if 'file' not in request.files:
+        return "No file part"
+    file = request.files['file']
+    if file.filename == '':
+        return "No selected file"
+
+    allowed_file = lambda filename: '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+    if file and allowed_file(file.filename):
+        filename =  werkzeug.utils.secure_filename(file.filename)
+        name, ext = os.path.splitext(filename)
+        new_filename = f"{name}_path{ext}"
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], new_filename)
+        file.save(filepath)
+        populate_pathcoord_db(filepath)
+        return f"File uploaded to {filepath}"
+    return "Invalid file type"
+
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
@@ -195,16 +264,21 @@ def upload_file():
 
     if file and allowed_file(file.filename):
         filename =  werkzeug.utils.secure_filename(file.filename)
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        name, ext = os.path.splitext(filename)
+        new_filename = f"{name}_ap{ext}"
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], new_filename)
         file.save(filepath)
-        populate_db(filepath)
+        populate_record_db(filepath)
         return f"File uploaded to {filepath}"
     return "Invalid file type"
+
+
 
 
 @app.route("/cleardb", methods=["DELETE"])
 def clear_db():
     db.session.query(Record).delete()
+    db.session.query(PathCoord).delete()
     db.session.commit()
     return {"message": "All records deleted"}, 200
 
