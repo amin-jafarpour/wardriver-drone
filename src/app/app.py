@@ -5,6 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import werkzeug.utils
 import ap
+import dji_flight_path
 
 app = Flask(__name__)
 
@@ -27,7 +28,7 @@ class PathCoord(db.Model):
     time = db.Column(db.Time, nullable=False)
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
-    altitude = db.Column(db.Float, nullable=False)
+    altitude = db.Column(db.Float, nullable=True)
 
     def to_dict(self):
         return {
@@ -112,26 +113,21 @@ class Record(db.Model):
         }
 
 def populate_pathcoord_db(file_path):
-    print('populate_pathcoord_db')
-    # with open(file_path, 'r') as file:
-    #     content = file.read()
-    #     pathcoord_str_list = .readCSV(content)
-    #     pathcoord_list = []
-    #     for pathcoord_str in pathcoord_str_list:
-    #         try:
-    #             pathcoord = .parse_obj(pathcoord_str)
-    #             pathcoord_list.append(pathcoord)
-    #         except Exception as e:    
-    #                 continue
-    #     for obj in pathcoord_list:
-    #         record = Record(
-    #         date=obj.date,
-    #         time=obj.time,
-    #         latitude=obj.latitude,
-    #         longitude=obj.longitude,
-    #         altitude=obj.altitude)
-    #         db.session.add(record)
-    #         db.session.commit()
+    extractor = (
+        dji_flight_path.FlightPathExtractor(file_path)
+        .load()
+        .extract()
+    )
+    pathcoord_list = extractor.to_list()
+    for obj in pathcoord_list:
+        record = PathCoord(
+                date=datetime.strptime(obj['date'], "%Y-%m-%d").date(),
+                time=datetime.strptime(obj['time'], "%H:%M:%S").time(),
+                latitude=obj['latitude'],
+                longitude=obj['longitude'],
+                altitude=obj['altitude_ft'])
+        db.session.add(record)
+        db.session.commit()
 
 def populate_record_db(file_path):
     with open(file_path, 'r') as file:
